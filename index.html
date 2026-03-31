@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ELITE TRACKER - COMMAND MODE</title>
+    <title>ELITE TRACKER - DYNAMIC COLORS</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <style>
         :root { 
             --bg: #050505; --card: #111; --accent: #00ff88; --accent-glow: rgba(0, 255, 136, 0.3);
-            --text: #fff; --dim: #555; --red: #ff3b3b; --reps-color: #ffffff;
+            --text: #fff; --dim: #555; --red: #ff3b3b; --orange: #ff9500; --blue-pink: #ff00ff;
         }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; padding-top: 40px; }
         h1, h2, .oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; }
@@ -22,44 +22,41 @@
         .nav-btn { background: #0f0f0f; border: 1px solid #222; color: var(--dim); padding: 15px; border-radius: 10px; cursor: pointer; font-family: 'Oswald'; }
         .nav-btn.active { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
-        .exo-card { background: var(--card); border: 1px solid #222; padding: 18px; border-radius: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+        .exo-card { background: var(--card); border: 1px solid #222; padding: 18px; border-radius: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .exo-info b { font-size: 17px; display: block; color: #fff; }
-        .exo-info span { color: var(--dim); font-size: 11px; }
-
-        .status-badge { font-size: 9px; padding: 4px 8px; border-radius: 4px; font-weight: 900; margin-top: 8px; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px; }
-        .badge-up { background: rgba(0, 255, 136, 0.15); color: var(--accent); border: 1px solid var(--accent); box-shadow: 0 0 8px rgba(0, 255, 136, 0.2); }
+        .status-badge { font-size: 9px; padding: 4px 8px; border-radius: 4px; font-weight: 900; margin-top: 8px; display: inline-block; text-transform: uppercase; }
+        .badge-up { background: rgba(0, 255, 136, 0.15); color: var(--accent); border: 1px solid var(--accent); }
         .badge-stay { background: rgba(255, 255, 255, 0.05); color: #444; border: 1px solid #222; }
 
         .modal { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; padding: 20px; overflow-y: auto; }
-        .last-perf-banner { background: rgba(255, 255, 255, 0.03); border: 1px solid #333; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
-        .last-perf-banner small { display: block; font-size: 9px; color: var(--accent); font-weight: bold; letter-spacing: 1px; margin-bottom: 5px; }
-        .last-perf-banner div { font-family: 'Oswald'; font-size: 20px; color: #fff; }
+        
+        /* Journal des charges de la semaine passée */
+        .record-banner { background: #0f1a14; border: 1px solid #1a3326; padding: 15px; border-radius: 12px; margin-bottom: 20px; border-left: 5px solid var(--accent); }
+        .record-banner small { display: block; font-size: 9px; color: var(--accent); font-weight: bold; margin-bottom: 5px; }
+        .record-banner div { font-family: 'Oswald'; font-size: 22px; color: #fff; }
 
         .input-box { background: #0c0c0c; border: 1px solid #222; padding: 20px; border-radius: 20px; margin-bottom: 15px; }
         .weight-input { width: 100%; background: transparent; border: none; color: var(--accent); font-size: 48px; font-family: 'Oswald'; text-align: center; outline: none; }
 
-        .set-row { display: flex; justify-content: space-between; align-items: center; background: #151515; padding: 12px; border-radius: 10px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.02); }
-        .btn-qty { background: #252525; color: white; border: none; width: 42px; height: 42px; border-radius: 10px; font-size: 22px; font-weight: bold; }
+        .set-row { display: flex; justify-content: space-between; align-items: center; background: #151515; padding: 12px; border-radius: 10px; margin-bottom: 8px; }
+        .btn-qty { background: #252525; color: white; border: none; width: 42px; height: 42px; border-radius: 10px; font-size: 22px; }
         
-        .btn-save { background: var(--accent); color: #000; border: none; width: 100%; padding: 20px; font-family: 'Oswald'; font-size: 18px; border-radius: 15px; font-weight: bold; margin-top: 15px; box-shadow: 0 5px 20px var(--accent-glow); }
+        .btn-save { background: var(--accent); color: #000; border: none; width: 100%; padding: 20px; font-family: 'Oswald'; font-size: 18px; border-radius: 15px; font-weight: bold; margin-top: 15px; }
 
-        .chart-box { height: 280px; margin-top: 30px; background: #080808; border-radius: 20px; padding: 15px; border: 1px solid #111; }
-        
-        .history-row { display: flex; justify-content: space-between; align-items: center; background: #0a0a0a; padding: 15px; border-radius: 10px; margin-top: 8px; border-left: 4px solid var(--accent); }
-        .history-row .poids { font-family: 'Oswald'; color: var(--accent); font-size: 18px; }
-        .history-row .reps { font-size: 13px; color: #eee; font-weight: bold; }
+        .chart-box { height: 300px; margin-top: 30px; background: #080808; border-radius: 20px; padding: 15px; border: 1px solid #111; }
+        .history-row { display: flex; justify-content: space-between; align-items: center; background: #0a0a0a; padding: 15px; border-radius: 10px; margin-top: 8px; border: 1px solid #111; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <span>BIOMETRICS ANALYZER</span>
-        <h1 id="title">SESSION 1</h1>
+        <h1 id="title">UPPER 1</h1>
     </div>
 
     <div class="nav">
-        <button class="nav-btn active" id="btnU1" onclick="load('U1')">UPPER 1</button>
-        <button class="nav-btn" id="btnU2" onclick="load('U2')">UPPER 2</button>
+        <button class="nav-btn active" id="btnU1" onclick="load('U1')">SESSION 1</button>
+        <button class="nav-btn" id="btnU2" onclick="load('U2')">SESSION 2</button>
     </div>
 
     <div id="exo-list"></div>
@@ -70,24 +67,24 @@
             <span onclick="closeM()" style="color:var(--red); font-family:Oswald; font-weight:bold; cursor:pointer;">✕</span>
         </div>
 
-        <div id="last-perf-display" class="last-perf-banner">
-            <small>RECORD PRÉCÉDENT</small>
-            <div id="last-val-text">-- kg | -- reps</div>
+        <div class="record-banner">
+            <small>JOURNAL SEMAINE PASSÉE (RECORD À BATTRE)</small>
+            <div id="last-record-text">-- kg | -- reps</div>
         </div>
 
         <div class="input-box">
-            <label style="display:block; text-align:center; font-size:10px; color:var(--dim); margin-bottom:5px; font-weight:800;">CHARGE EN KG</label>
+            <label style="display:block; text-align:center; font-size:10px; color:var(--dim); margin-bottom:5px;">CHARGE EN KG</label>
             <input type="number" id="main-weight" class="weight-input" inputmode="decimal">
             <div id="sets-container"></div>
             <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #333; color:#555; padding:10px; margin-top:15px; border-radius:8px; font-size:11px;">+ AJOUTER UNE SÉRIE</button>
         </div>
 
-        <button class="btn-save" onclick="saveSession()">ENREGISTRER LA PERFORMANCE</button>
+        <button class="btn-save" onclick="saveSession()">VALIDER LA SÉANCE</button>
         
         <div class="chart-box"><canvas id="chart"></canvas></div>
 
         <div style="margin-top:40px;">
-            <h3 class="oswald" style="font-size:14px; color:var(--dim); letter-spacing:1px; margin-bottom:15px;">JOURNAL D'ENTRAÎNEMENT</h3>
+            <h3 class="oswald" style="font-size:14px; color:var(--dim); margin-bottom:15px;">HISTORIQUE COMPLET</h3>
             <div id="history-list"></div>
         </div>
     </div>
@@ -95,11 +92,11 @@
 <script>
     Chart.register(ChartDataLabels);
 
-    let config = JSON.parse(localStorage.getItem('Elite_Config_V6')) || {
+    let config = JSON.parse(localStorage.getItem('Elite_Config_V7')) || {
         'U1': ["Développé couché", "Tirage vertical prise serré", "Tirage horizontal", "Elevations latérales", "Curl marteau"],
         'U2': ["Développé couché barre", "Tirage horizontal", "Tirage vertical", "Face pull", "Elevation latérale"]
     };
-    let logs = JSON.parse(localStorage.getItem('Elite_Logs_V6')) || {};
+    let logs = JSON.parse(localStorage.getItem('Elite_Logs_V7')) || {};
     let currentExo = ""; let currentSets = []; let currentSessId = 'U1'; let chartObj = null;
 
     function load(id) {
@@ -112,13 +109,8 @@
         list.innerHTML = '';
         config[id].forEach(name => {
             const h = logs[name] || []; const last = h.length > 0 ? h[h.length-1] : null;
-            
-            // Logique de badge
             let badgeHtml = '<span class="status-badge badge-stay">VISER 10 REPS</span>';
-            if(last) {
-                const allDone = last.sets.every(r => r >= 10);
-                if(allDone) badgeHtml = '<span class="status-badge badge-up">AUGMENTE TA CHARGE</span>';
-            }
+            if(last && last.sets.every(r => r >= 10)) badgeHtml = '<span class="status-badge badge-up">AUGMENTE TA CHARGE</span>';
 
             const card = document.createElement('div');
             card.className = 'exo-card';
@@ -126,10 +118,10 @@
             card.innerHTML = `
                 <div class="exo-info">
                     <b class="oswald">${name}</b>
-                    <span>${last ? last.weight+'kg • '+last.sets.join('/') : 'Données vierges'}</span><br>
+                    <span>${last ? last.weight+'kg • '+last.sets.join('/') : 'Vierge'}</span><br>
                     ${badgeHtml}
                 </div>
-                <div style="background:var(--accent); width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#000; font-weight:bold;">+</div>
+                <div style="color:var(--accent); font-weight:bold;">➔</div>
             `;
             list.appendChild(card);
         });
@@ -140,11 +132,11 @@
         const last = h.length > 0 ? h[h.length-1] : null;
         
         if(last) {
-            document.getElementById('last-val-text').innerText = `${last.weight} kg | ${last.sets.join(' / ')} reps`;
+            document.getElementById('last-record-text').innerText = `${last.weight} kg | ${last.sets.join(' / ')} reps`;
             document.getElementById('main-weight').value = last.weight;
             currentSets = [...last.sets];
         } else {
-            document.getElementById('last-val-text').innerText = "Nouvel exercice";
+            document.getElementById('last-record-text').innerText = "Aucun record";
             document.getElementById('main-weight').value = "";
             currentSets = [10, 10, 10];
         }
@@ -158,10 +150,10 @@
         const container = document.getElementById('sets-container');
         container.innerHTML = currentSets.map((reps, i) => `
             <div class="set-row">
-                <span class="oswald" style="color:var(--dim); font-size:11px;">SET ${i+1}</span>
+                <span class="oswald" style="color:var(--dim); font-size:11px;">SÉRIE ${i+1}</span>
                 <div style="display:flex; align-items:center; gap:20px;">
                     <button class="btn-qty" onclick="changeRep(${i},-1)">-</button>
-                    <span class="oswald" style="font-size:24px; width:30px; text-align:center; color:white;">${reps}</span>
+                    <span class="oswald" style="font-size:24px; width:30px; text-align:center;">${reps}</span>
                     <button class="btn-qty" onclick="changeRep(${i},1)">+</button>
                 </div>
             </div>
@@ -183,40 +175,59 @@
         };
         if(!logs[currentExo]) logs[currentExo] = [];
         logs[currentExo].push(entry);
-        localStorage.setItem('Elite_Logs_V6', JSON.stringify(logs));
+        localStorage.setItem('Elite_Logs_V7', JSON.stringify(logs));
         closeM(); load(currentSessId);
     }
 
     function renderChart(name) {
         const h = logs[name] || []; const ctx = document.getElementById('chart').getContext('2d');
         if(chartObj) chartObj.destroy();
+
+        // Calcul des couleurs dynamiques
+        const weightColors = h.map((e, i) => {
+            if (i === 0) return '#ffffff';
+            if (e.weight > h[i-1].weight) return '#00ff88'; // Vert
+            if (e.weight < h[i-1].weight) return '#ff3b3b'; // Rouge
+            return '#ffffff'; // Blanc neutre
+        });
+
+        const repsColors = h.map((e, i) => {
+            if (i === 0) return '#ffffff';
+            if (e.avgReps > h[i-1].avgReps) return '#ff00ff'; // Bleu-Rose (Magenta)
+            if (e.avgReps < h[i-1].avgReps) return '#ff9500'; // Orange
+            return '#ffffff'; // Blanc neutre
+        });
+
         chartObj = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: h.map(l => l.date),
                 datasets: [
                     {
-                        label: 'Poids (kg)',
+                        label: 'Poids',
                         data: h.map(l => l.weight),
-                        borderColor: '#00ff88', borderWidth: 4, yAxisID: 'yWeight',
-                        pointBackgroundColor: '#00ff88', pointRadius: 4, tension: 0.3,
-                        datalabels: { color: '#00ff88', align: 'top', offset: 5, font: {family:'Oswald', weight:'bold', size:11}, formatter: (v)=>v+'kg' }
+                        borderColor: '#555', borderWidth: 2,
+                        segment: { borderColor: ctx => weightColors[ctx.p1DataIndex] },
+                        pointBackgroundColor: weightColors,
+                        pointRadius: 5, yAxisID: 'yW',
+                        datalabels: { color: weightColors, align: 'top', formatter: (v)=>v+'kg' }
                     },
                     {
-                        label: 'Reps (moy)',
+                        label: 'Reps',
                         data: h.map(l => l.avgReps),
-                        borderColor: '#ffffff', borderWidth: 2, borderDash: [5, 5], yAxisID: 'yReps',
-                        pointRadius: 3, pointBackgroundColor: '#ffffff', tension: 0.3,
-                        datalabels: { color: '#ffffff', align: 'bottom', offset: 5, font: {size:9}, formatter: (v)=>v+' r' }
+                        borderColor: '#333', borderDash: [3, 3],
+                        segment: { borderColor: ctx => repsColors[ctx.p1DataIndex] },
+                        pointBackgroundColor: repsColors,
+                        pointRadius: 4, yAxisID: 'yR',
+                        datalabels: { color: repsColors, align: 'bottom', formatter: (v)=>v+'r' }
                     }
                 ]
             },
             options: { 
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                maintainAspectRatio: false, plugins: { legend: { display: false } },
                 scales: { 
-                    yWeight: { type: 'linear', position: 'left', grid:{color:'#111'}, ticks:{display:false} },
-                    yReps: { type: 'linear', position: 'right', grid:{display:false}, ticks:{display:false} }
+                    yW: { type: 'linear', position: 'left', display: false },
+                    yR: { type: 'linear', position: 'right', display: false }
                 }
             }
         });
@@ -226,14 +237,14 @@
         const h = logs[name] || [];
         document.getElementById('history-list').innerHTML = h.map((e, i) => `
             <div class="history-row">
-                <div><div class="poids">${e.weight} KG</div></div>
-                <div class="reps">${e.sets.join(' / ')}</div>
-                <div style="color:var(--red); font-size:12px; padding:5px;" onclick="deleteEntry('${name}',${i})">✕</div>
+                <div class="oswald" style="color:var(--accent); font-size:18px;">${e.weight} KG</div>
+                <div style="font-weight:bold;">${e.sets.join(' / ')}</div>
+                <div style="color:var(--red); font-size:10px;" onclick="deleteEntry('${name}',${i})">SUPPR</div>
             </div>
         `).reverse().join('');
     }
 
-    function deleteEntry(name, i) { if(confirm("Supprimer cette séance ?")) { logs[name].splice(i, 1); localStorage.setItem('Elite_Logs_V6', JSON.stringify(logs)); renderHistory(name); renderChart(name); load(currentSessId); } }
+    function deleteEntry(name, i) { if(confirm("Supprimer ?")) { logs[name].splice(i, 1); localStorage.setItem('Elite_Logs_V7', JSON.stringify(logs)); renderHistory(name); renderChart(name); load(currentSessId); } }
     load('U1');
 </script>
 </body>
