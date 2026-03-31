@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AFITNESS TRACKER - PRO GEN</title>
+    <title>AFITNESS TRACKER - ULTRA SMOOTH</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -11,13 +11,20 @@
         :root {
             --primary: #ff0000;
             --primary-glow: rgba(255, 0, 0, 0.4);
-            --primary-dark: #2a0000;
-            --bg-top: #3a0000;
+            --primary-dark: #3a0000;
+            --bg-top: #2a0000;
             --bg: #050505; 
-            --card: rgba(18, 18, 18, 0.85); 
+            --card: rgba(18, 18, 18, 0.8); 
             --text: #ffffff; 
             --dim: #888; 
             --inner-glow: inset 0 1px 2px rgba(255,255,255,0.1);
+        }
+
+        /* CORRECTION : Suppression du contour bleu au clic sur mobile */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            box-sizing: border-box;
         }
 
         body {
@@ -26,94 +33,90 @@
             background-attachment: fixed;
             color: var(--text);
             margin: 0; padding: 20px; padding-top: 40px;
-            transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Optimisation de la fluidité */
+            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
         h1, h2, .oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* OPTIMISATION MOBILE : Accélération GPU */
-        .exo-card, .nav-btn, .modal, .header {
-            will-change: transform;
-            transform: translateZ(0); /* Force le mode 3D pour la fluidité */
-        }
-
-        /* HEADER DESIGN PREMIUM */
+        /* HEADER */
         .header { 
             border-left: 6px solid var(--primary); 
             padding: 12px 20px; 
             margin-bottom: 40px; 
             background: linear-gradient(90deg, var(--primary-glow) 0%, transparent 100%);
             border-radius: 4px 15px 15px 4px;
-            box-shadow: -15px 10px 30px rgba(0,0,0,0.5);
-            transition: border-color 0.5s, background 0.5s;
+            box-shadow: -15px 0 30px rgba(0,0,0,0.5);
+            transition: all 0.4s ease;
+            transform: translate3d(0,0,0); /* Accélération GPU */
         }
         .header span { 
             color: var(--primary); 
             font-weight: 900; 
             font-size: 26px; 
             letter-spacing: -1px;
-            text-shadow: 0 0 20px var(--primary-glow);
-            transition: color 0.5s;
+            text-shadow: 0 0 15px var(--primary-glow);
         }
-        .header h1 { font-size: 13px; margin: 5px 0 0 0; color: var(--dim); letter-spacing: 5px; opacity: 0.7; }
+        .header h1 { font-size: 13px; margin: 5px 0 0 0; color: var(--dim); letter-spacing: 4px; }
 
         /* NAVIGATION */
         .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 35px; }
         .nav-btn {
-            border-radius: 16px; cursor: pointer; font-family: 'Oswald'; font-size: 13px; padding: 22px;
-            transition: all 0.3s ease;
+            border-radius: 14px; cursor: pointer; font-family: 'Oswald'; font-size: 13px; padding: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
             border: 1px solid rgba(255,255,255,0.05);
             background: #0f0f0f;
             color: var(--dim);
             box-shadow: 0 10px 20px rgba(0,0,0,0.4), var(--inner-glow);
+            transform: translate3d(0,0,0);
         }
 
         .active-u1 {
             background: linear-gradient(145deg, #ff1f1f, #8b0000) !important;
             color: white !important; border: none !important;
             box-shadow: 0 15px 35px rgba(255, 0, 0, 0.35), var(--inner-glow) !important;
-            transform: translateY(-4px);
+            transform: translate3d(0, -4px, 0) scale(1.02);
         }
 
         .active-u2 {
             background: linear-gradient(145deg, #ffcc00, #b88600) !important;
             color: black !important; border: none !important;
             box-shadow: 0 15px 35px rgba(255, 204, 0, 0.3), var(--inner-glow) !important;
-            transform: translateY(-4px);
+            transform: translate3d(0, -4px, 0) scale(1.02);
         }
 
-        /* CARDS PREMIUM OPTIMISÉES */
+        /* CARDS */
         .exo-card {
             background: var(--card); 
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.04);
             padding: 25px; border-radius: 24px; margin-bottom: 20px;
             display: flex; justify-content: space-between; align-items: center;
-            backdrop-filter: blur(12px); /* Réduit de 20 à 12 pour la fluidité mobile */
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5), var(--inner-glow);
-            transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+            backdrop-filter: blur(10px); /* Réduit pour plus de fluidité mobile */
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.05);
+            transition: transform 0.2s ease;
+            transform: translate3d(0,0,0);
         }
-        .exo-card:active { transform: scale(0.96); }
-
-        .exo-info .oswald { font-size: 21px; margin-bottom: 4px; letter-spacing: 1px; }
+        .exo-card:active { transform: scale(0.96) translate3d(0,0,0); }
 
         .add-btn-icon {
             width: 48px; height: 48px; border-radius: 16px;
             display: flex; align-items: center; justify-content: center;
             background: var(--primary);
             color: white; font-weight: bold; font-size: 22px;
-            box-shadow: 0 8px 20px var(--primary-glow);
-            transition: all 0.5s ease;
+            box-shadow: 0 10px 20px var(--primary-glow);
+            transition: background 0.4s ease;
         }
 
         .status-badge { 
             font-size: 9px; padding: 6px 14px; border-radius: 30px; font-weight: 800; 
             margin-top: 10px; display: inline-block;
             border: 1px solid var(--primary); color: var(--primary);
-            background: rgba(255,255,255,0.03);
-            transition: all 0.5s ease;
+            background: rgba(255,255,255,0.02);
+            transition: all 0.4s ease;
         }
 
         /* MODALE */
@@ -121,20 +124,7 @@
             display: none; position: fixed; inset: 0; 
             background: radial-gradient(circle at center, var(--primary-dark) 0%, #050505 100%); 
             z-index: 1000; padding: 25px; overflow-y: auto;
-            transition: background 0.5s ease;
-        }
-
-        .input-section {
-            background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.05);
-            padding: 30px; border-radius: 32px; 
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.9);
-        }
-
-        .btn-qty { 
-            background: #1a1a1a; color: white; border: 1px solid #333; 
-            width: 55px; height: 55px; border-radius: 18px; font-size: 24px; 
-            box-shadow: 0 8px 15px rgba(0,0,0,0.4), var(--inner-glow);
-            active { transform: scale(0.9); }
+            transform: translate3d(0,0,0);
         }
 
         .btn-save {
@@ -142,17 +132,13 @@
             font-family: 'Oswald'; font-size: 18px; border-radius: 20px; font-weight: bold; margin-top: 30px;
             box-shadow: 0 15px 40px var(--primary-glow);
             text-transform: uppercase; letter-spacing: 2px;
-            transition: background 0.5s, box-shadow 0.5s;
+            transition: all 0.4s ease;
         }
 
-        /* Chart & History */
-        .chart-container { height: 260px; margin-top:40px; background:rgba(0,0,0,0.4); border-radius:28px; padding:20px; border: 1px solid rgba(255,255,255,0.03); }
-        .history-row { display:flex; justify-content:space-between; padding:22px; background:rgba(255,255,255,0.03); border-radius:20px; margin-bottom:12px; border:1px solid rgba(255,255,255,0.02); }
-
-        @media (max-width: 600px) {
-            body { padding: 15px; padding-top: 30px; }
-            .header span { font-size: 22px; }
-            .exo-card { padding: 20px; }
+        .btn-qty { 
+            background: #1a1a1a; color: white; border: 1px solid #333; 
+            width: 55px; height: 55px; border-radius: 18px; font-size: 24px; 
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4), var(--inner-glow);
         }
     </style>
 </head>
@@ -173,33 +159,33 @@
     <div id="exo-list"></div>
 
     <div style="text-align: center; margin: 50px 0;">
-        <button onclick="addExo()" style="background:none; border: 1px dashed #444; color:#666; padding:18px 35px; border-radius:15px; font-family:Oswald; cursor:pointer;">+ AJOUTER EXERCICE</button>
+        <button onclick="addExo()" style="background:none; border: 1px dashed #444; color:#666; padding:18px 30px; border-radius:12px; font-family:Oswald; cursor:pointer;">+ AJOUTER EXERCICE</button>
     </div>
 
     <div id="modal" class="modal">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:35px;">
-            <h2 id="m-name" style="margin:0; font-size:28px; letter-spacing:1px;"></h2>
-            <span onclick="closeM()" style="background:rgba(255,255,255,0.08); padding:15px; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold;">✕</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h2 id="m-name" style="margin:0; font-size:28px;"></h2>
+            <span onclick="closeM()" style="background:rgba(255,255,255,0.1); padding:15px; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold;">✕</span>
         </div>
 
-        <div class="record-banner" id="banner-modal" style="border-left: 4px solid var(--primary); background: rgba(255,255,255,0.02); padding: 22px; border-radius: 18px; margin-bottom: 25px;">
-            <small style="color:var(--dim); font-size:10px; font-weight:bold; letter-spacing:1px;">DERNIÈRE PERFORMANCE</small>
-            <div id="last-record-text" style="font-family:Oswald; font-size:26px; margin-top:8px; color:white;"></div>
+        <div class="record-banner" style="border-left: 4px solid var(--primary); background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; margin-bottom: 25px;">
+            <small style="color:var(--dim); font-size:10px; font-weight:bold;">DERNIÈRE PERFORMANCE</small>
+            <div id="last-record-text" style="font-family:Oswald; font-size:24px; margin-top:5px;"></div>
         </div>
 
-        <div class="input-section">
-            <input type="number" id="main-weight" class="weight-input" style="width:100%; background:transparent; border:none; color:#fff; font-size:65px; font-family:Oswald; text-align:center; outline:none;" inputmode="decimal">
-            <div style="text-align:center; color:var(--primary); font-family:Oswald; margin-bottom:35px; font-size:14px; letter-spacing:4px; font-weight:700;">KILOGRAMMES</div>
+        <div class="input-section" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.05); padding: 30px; border-radius: 30px; box-shadow: inset 0 0 50px rgba(0,0,0,0.8);">
+            <input type="number" id="main-weight" class="weight-input" style="width:100%; background:transparent; border:none; color:#fff; font-size:60px; font-family:Oswald; text-align:center; outline:none;" inputmode="decimal">
+            <div style="text-align:center; color:var(--primary); font-family:Oswald; margin-bottom:30px; font-size:14px; letter-spacing:3px;">KILOGRAMMES</div>
             <div id="sets-container"></div>
-            <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #444; color:#888; padding:18px; margin-top:20px; border-radius:18px; font-family:Montserrat; font-weight:bold; font-size:12px;">+ AJOUTER SÉRIE</button>
+            <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #444; color:#888; padding:18px; margin-top:20px; border-radius:15px; font-family: Montserrat; font-size:12px;">+ AJOUTER SÉRIE</button>
         </div>
 
-        <button class="btn-save" id="save-btn-modal" onclick="saveSession()">ENREGISTRER LA SÉANCE</button>
+        <button class="btn-save" id="save-btn-modal" onclick="saveSession()">ENREGISTRER</button>
        
-        <div class="chart-container">
+        <div style="height: 280px; margin-top:40px; background:rgba(0,0,0,0.3); border-radius:25px; padding:20px;">
             <canvas id="chart"></canvas>
         </div>
-        <div id="history-list" style="margin-top:35px;"></div>
+        <div id="history-list" style="margin-top:30px;"></div>
     </div>
 
 <script>
@@ -217,6 +203,7 @@
         const root = document.documentElement;
         const brand = document.getElementById('brand-name');
 
+        // Mise à jour visuelle immédiate
         if(id === 'U1') {
             root.style.setProperty('--primary', '#ff0000');
             root.style.setProperty('--primary-glow', 'rgba(255, 0, 0, 0.4)');
@@ -237,8 +224,10 @@
 
         document.getElementById('title').innerText = id === 'U1' ? 'UPPER 1' : 'UPPER 2';
        
+        // On vide et remplit la liste
         const list = document.getElementById('exo-list');
         list.innerHTML = '';
+        
         config[id].forEach(name => {
             const h = logs[name] || []; const last = h.length > 0 ? h[h.length-1] : null;
             let statusHtml = '<span class="status-badge" style="border-color:rgba(255,255,255,0.1); color:#666">CIBLE 10 REPS</span>';
@@ -246,11 +235,11 @@
 
             const card = document.createElement('div');
             card.className = 'exo-card';
-            card.onclick = () => openM(name);
+            card.onclick = (e) => { e.preventDefault(); openM(name); };
             card.innerHTML = `
                 <div class="exo-info">
                     <div class="oswald">${name}</div>
-                    <div style="font-size:15px; color:var(--dim); font-weight:700; margin-top:2px;">${last ? last.weight+'KG • '+last.sets.join('/') : '--'}</div>
+                    <div style="font-size:15px; color:var(--dim); font-weight:700;">${last ? last.weight+'KG • '+last.sets.join('/') : '--'}</div>
                     ${statusHtml}
                 </div>
                 <div class="add-btn-icon" style="color:${id === 'U1' ? 'white' : 'black'}">+</div>
@@ -267,7 +256,7 @@
             document.getElementById('main-weight').value = last.weight;
             currentSets = [...last.sets];
         } else {
-            document.getElementById('last-record-text').innerText = "À DÉTERMINER";
+            document.getElementById('last-record-text').innerText = "AUCUNE DONNÉE";
             document.getElementById('main-weight').value = "";
             currentSets = [8, 8, 8];
         }
@@ -279,11 +268,11 @@
     function refreshSetsUI() {
         const container = document.getElementById('sets-container');
         container.innerHTML = currentSets.map((reps, i) => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.04); padding:18px; border-radius:20px; margin-bottom:12px; border:1px solid rgba(255,255,255,0.02);">
-                <span class="oswald" style="color:var(--dim); font-size:13px;">SÉRIE ${i+1}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:18px; border-radius:18px; margin-bottom:12px; border:1px solid rgba(255,255,255,0.02);">
+                <span class="oswald" style="color:var(--dim); font-size:12px;">SÉRIE ${i+1}</span>
                 <div style="display:flex; align-items:center; gap:12px;">
                     <button class="btn-qty" onclick="changeRep(${i},-1)">-</button>
-                    <span class="oswald" style="font-size:30px; width:45px; text-align:center;">${reps}</span>
+                    <span class="oswald" style="font-size:28px; width:45px; text-align:center;">${reps}</span>
                     <button class="btn-qty" onclick="changeRep(${i},1)">+</button>
                 </div>
             </div>
@@ -319,27 +308,19 @@
                     data: h.map(l => l.weight),
                     borderColor: '#ff0000',
                     borderWidth: 4, tension: 0.35, pointBackgroundColor: '#fff',
-                    pointRadius: 4,
-                    datalabels: { color: '#fff', align: 'top', font:{family:'Oswald', size: 12, weight:'bold'} }
+                    datalabels: { color: '#fff', align: 'top', font:{family:'Oswald', size:11, weight:'bold'} }
                 }]
             },
-            options: { 
-                maintainAspectRatio: false, 
-                plugins: { legend: { display: false } }, 
-                scales: { 
-                    y: { display: false }, 
-                    x: { grid: { display: false }, ticks: { color: '#555', font: { family: 'Oswald'} } } 
-                } 
-            }
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#444' } } } }
         });
     }
 
     function renderHistory(name) {
         const h = logs[name] || [];
         document.getElementById('history-list').innerHTML = h.map((e, i) => `
-            <div class="history-row">
+            <div style="display:flex; justify-content:space-between; padding:22px; background:rgba(255,255,255,0.02); border-radius:18px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.02);">
                 <span class="oswald" style="color:var(--primary); font-size:18px;">${e.weight} KG</span>
-                <span style="font-weight:800; letter-spacing:1px;">${e.sets.join(' / ')}</span>
+                <span style="font-weight:700;">${e.sets.join(' / ')}</span>
             </div>
         `).reverse().join('');
     }
