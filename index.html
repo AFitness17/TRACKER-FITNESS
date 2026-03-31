@@ -3,104 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>ELITE TRACKER PRO</title>
+    <title>ELITE TRACKER - PROGRESSION AUTO</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --bg: #000; --card: #0a0a0a; --accent: #e61e25; --text: #fff; --dim: #555; --green: #2ecc71; }
-        
-        /* Focus Mode : Suppression des marges inutiles pour mobile */
-        body { 
-            font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); 
-            margin: 0; padding: env(safe-area-inset-top) 15px 40px 15px; 
-            overflow-x: hidden; -webkit-tap-highlight-color: transparent;
-        }
-        
-        h1, h2 { font-family: 'Oswald', sans-serif; text-transform: uppercase; margin: 0; }
+        :root { --bg: #000; --card: #0c0c0c; --accent: #e61e25; --text: #fff; --dim: #555; --green: #2ecc71; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; padding-top: 30px; }
+        h1, h2, .oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; }
 
-        /* Header Premium */
-        .header { border-left: 4px solid var(--accent); padding-left: 12px; margin: 20px 0; display: flex; justify-content: space-between; align-items: center; }
+        .header { border-left: 4px solid var(--accent); padding-left: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; }
         .header span { color: var(--dim); font-size: 10px; letter-spacing: 2px; font-weight: bold; }
 
-        /* Navigation */
-        .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
-        .nav-btn { background: var(--card); border: 1px solid #1a1a1a; color: var(--dim); padding: 18px; border-radius: 6px; cursor: pointer; font-family: 'Oswald'; font-size: 14px; transition: 0.3s; }
-        .nav-btn.active { border-color: var(--accent); color: white; background: #130303; box-shadow: 0 4px 15px rgba(230, 30, 37, 0.15); }
+        .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .nav-btn { background: var(--card); border: 1px solid #1a1a1a; color: var(--dim); padding: 15px; border-radius: 4px; cursor: pointer; font-family: 'Oswald'; }
+        .nav-btn.active { border-color: var(--accent); color: white; background: #130303; }
 
-        /* Liste Exercices */
-        .exo-row { background: var(--card); border-bottom: 1px solid #111; padding: 22px 10px; display: flex; justify-content: space-between; align-items: center; border-radius: 4px; margin-bottom: 2px; }
-        .exo-name { font-family: 'Oswald'; font-size: 18px; letter-spacing: 0.5px; }
-        .exo-last { color: var(--dim); font-size: 11px; margin-top: 4px; }
-        .exo-rm { color: var(--green); font-family: 'Oswald'; font-size: 12px; }
+        .exo-card { background: var(--card); border: 1px solid #111; padding: 18px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .status-badge { font-size: 9px; padding: 3px 6px; border-radius: 3px; font-weight: bold; margin-top: 5px; display: inline-block; }
+        .badge-up { background: rgba(46, 204, 113, 0.2); color: var(--green); border: 1px solid var(--green); }
+        .badge-stay { background: rgba(85, 85, 85, 0.2); color: var(--dim); border: 1px solid var(--dim); }
 
-        /* Modal Saisie (Plein écran) */
-        .modal { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; padding: 25px; box-sizing: border-box; }
+        .modal { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; padding: 20px; overflow-y: auto; }
         .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         
-        .input-box { background: #0c0c0c; border: 1px solid #1a1a1a; padding: 18px; border-radius: 10px; margin-bottom: 12px; position: relative; }
-        .input-box label { display: block; color: var(--dim); font-size: 9px; margin-bottom: 10px; font-weight: 800; letter-spacing: 1px; }
-        .input-box input { background: transparent; border: none; color: white; width: 100%; font-size: 26px; font-family: 'Oswald'; outline: none; }
-        .last-val { position: absolute; right: 20px; top: 40%; color: #333; font-size: 13px; font-weight: bold; }
+        .input-section { background: #080808; border: 1px solid #1a1a1a; padding: 15px; border-radius: 10px; }
+        .weight-input { width: 100%; background: transparent; border: none; color: white; font-size: 32px; font-family: 'Oswald'; text-align: center; border-bottom: 1px solid var(--accent); margin-bottom: 15px; outline: none; }
+        
+        .set-row { display: flex; justify-content: space-between; align-items: center; background: #111; padding: 12px; border-radius: 6px; margin-bottom: 8px; }
+        .btn-qty { background: #222; color: white; border: none; width: 35px; height: 35px; border-radius: 4px; font-size: 18px; }
 
-        .btn-go { background: var(--accent); color: white; border: none; width: 100%; padding: 20px; font-family: 'Oswald'; font-size: 18px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        
-        /* Zone Sauvegarde */
-        .backup-zone { margin-top: 40px; padding: 20px; border-top: 1px solid #111; display: flex; gap: 10px; }
-        .btn-backup { flex: 1; background: #0c0c0c; border: 1px solid #222; color: #444; font-size: 10px; padding: 10px; border-radius: 4px; font-family: 'Oswald'; cursor: pointer; }
-        
-        .chart-wrap { height: 160px; margin-top: 30px; opacity: 0.6; }
+        .btn-save { background: var(--accent); color: white; border: none; width: 100%; padding: 18px; font-family: 'Oswald'; font-size: 18px; border-radius: 4px; font-weight: bold; margin-top: 20px; }
+        .target-hint { background: #1a0505; color: #ff9999; padding: 10px; border-radius: 6px; font-size: 12px; text-align: center; margin-bottom: 15px; border: 1px solid #3d0000; }
+
+        .chart-box { height: 220px; margin-top: 25px; border: 1px solid #111; padding: 5px; border-radius: 8px; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div>
-            <span>SYSTEME V6 - FOCUS</span>
-            <h1 id="session-title">UPPER 1</h1>
+            <span>INTELLIGENCE ARTIFICIELLE</span>
+            <h1 id="title">UPPER 1</h1>
         </div>
-        <div style="background:var(--accent); width:8px; height:8px; border-radius:50%; animation: pulse 2s infinite;"></div>
+        <button onclick="exportData()" style="background:none; border:none; color:var(--dim); font-size:10px;">💾 BACKUP</button>
     </div>
 
     <div class="nav">
-        <button class="nav-btn active" id="u1-btn" onclick="setSession('U1')">SÉANCE 1</button>
-        <button class="nav-btn" id="u2-btn" onclick="setSession('U2')">SÉANCE 2</button>
+        <button class="nav-btn active" id="btnU1" onclick="load('U1')">SESSION 1</button>
+        <button class="nav-btn" id="btnU2" onclick="load('U2')">SESSION 2</button>
     </div>
 
-    <div id="list"></div>
-
-    <div class="backup-zone">
-        <button class="btn-backup" onclick="exportData()">EXPORTER (BACKUP)</button>
-        <button class="btn-backup" onclick="importData()">IMPORTER</button>
-        <input type="file" id="importFile" style="display:none" onchange="processImport(this)">
-    </div>
+    <div id="exo-list"></div>
 
     <div id="modal" class="modal">
         <div class="modal-head">
-            <h2 id="m-title"></h2>
-            <span onclick="closeM()" style="color:var(--accent); font-family:'Oswald'; font-weight:bold; cursor:pointer;">RETOUR</span>
+            <h2 id="m-name"></h2>
+            <span onclick="closeM()" style="color:var(--accent); cursor:pointer; font-weight:bold;">✕ FERMER</span>
         </div>
 
-        <div class="input-box">
-            <label>SÉRIES</label>
-            <input type="number" id="in-s" placeholder="0" inputmode="numeric">
-            <span class="last-val" id="last-s"></span>
-        </div>
-        <div class="input-box">
-            <label>CHARGE (KG)</label>
-            <input type="number" id="in-w" placeholder="0" inputmode="decimal">
-            <span class="last-val" id="last-w"></span>
-        </div>
-        <div class="input-box">
-            <label>RÉPÉTITIONS</label>
-            <input type="number" id="in-r" placeholder="0" inputmode="numeric">
-            <span class="last-val" id="last-r"></span>
+        <div id="target-message" class="target-hint"></div>
+
+        <div class="input-section">
+            <label style="color:var(--dim); font-size:10px; display:block; text-align:center;">CHARGE ACTUELLE (KG)</label>
+            <input type="number" id="main-weight" class="weight-input" inputmode="decimal">
+            
+            <div id="sets-container"></div>
+            <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #333; color:#555; padding:8px; margin-top:10px; border-radius:4px; font-size:11px;">+ AJOUTER SÉRIE</button>
         </div>
 
-        <button class="btn-go" onclick="save()">ENREGISTRER LA PERFORMANCE</button>
-
-        <div class="chart-wrap"><canvas id="miniChart"></canvas></div>
+        <button class="btn-save" onclick="saveSession()">VALIDER LA SÉANCE</button>
+        <div class="chart-box"><canvas id="chart"></canvas></div>
     </div>
 
 <script>
@@ -109,138 +81,156 @@
         'U2': ["Développé couché barre", "Tirage horizontal", "Tirage vertical", "Face pull", "Elevation latérale"]
     };
 
-    let data = JSON.parse(localStorage.getItem('Elite_V6_Backup')) || {};
-    let curExo = "";
-    let curChart = null;
+    let logs = JSON.parse(localStorage.getItem('Elite_Auto_V2')) || {};
+    let currentExo = "";
+    let currentSets = [];
+    let chartObj = null;
 
-    function setSession(id) {
+    function load(id) {
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id.toLowerCase()+'-btn').classList.add('active');
-        document.getElementById('session-title').innerText = (id === 'U1' ? 'UPPER 1' : 'UPPER 2');
+        document.getElementById('btn'+id).classList.add('active');
+        document.getElementById('title').innerText = id === 'U1' ? 'UPPER 1' : 'UPPER 2';
         
-        const container = document.getElementById('list');
-        container.innerHTML = '';
+        const list = document.getElementById('exo-list');
+        list.innerHTML = '';
 
         config[id].forEach(name => {
-            const h = data[name] || [];
+            const h = logs[name] || [];
             const last = h.length > 0 ? h[h.length-1] : null;
-            const div = document.createElement('div');
-            div.className = 'exo-row';
-            div.onclick = () => openM(name);
-            div.innerHTML = `
+            
+            // Logique de Surcharge
+            let statusHtml = '<span class="status-badge badge-stay">EN ATTENTE</span>';
+            if(last) {
+                const allDone = last.sets.every(r => r >= 10);
+                statusHtml = allDone 
+                    ? '<span class="status-badge badge-up">▲ AUGMENTER POIDS</span>' 
+                    : '<span class="status-badge badge-stay">VISER 10 REPS PARTOUT</span>';
+            }
+
+            const card = document.createElement('div');
+            card.className = 'exo-card';
+            card.onclick = () => openM(name);
+            card.innerHTML = `
                 <div>
-                    <div class="exo-name">${name}</div>
-                    <div class="exo-last">${last ? last.sets+'x '+last.weight+'kg' : 'INITIALISATION...'}</div>
+                    <div class="exo-name oswald">${name}</div>
+                    <div style="font-size:11px; color:var(--dim)">${last ? last.weight+'kg | '+last.sets.join('/') : 'Première séance'}</div>
+                    ${statusHtml}
                 </div>
-                <div class="exo-rm">${last ? last.rm+'kg RM' : ''}</div>
+                <div style="color:var(--accent); font-size:20px;">➔</div>
             `;
-            container.appendChild(div);
+            list.appendChild(card);
         });
     }
 
     function openM(name) {
-        curExo = name;
+        currentExo = name;
+        const h = logs[name] || [];
+        const last = h.length > 0 ? h[h.length-1] : { weight: 0, sets: [8, 8, 8] };
+        
+        currentSets = [...last.sets];
+        document.getElementById('main-weight').value = last.weight;
         document.getElementById('modal').style.display = 'block';
-        document.getElementById('m-title').innerText = name;
+        document.getElementById('m-name').innerText = name;
         
-        const h = data[name] || [];
-        const last = h.length > 0 ? h[h.length-1] : {sets:'', weight:'', reps:''};
-        
-        document.getElementById('last-s').innerText = last.sets ? last.sets : '';
-        document.getElementById('last-w').innerText = last.weight ? last.weight : '';
-        document.getElementById('last-r').innerText = last.reps ? last.reps : '';
-        
+        const allDone = last.sets.every(r => r >= 10);
+        document.getElementById('target-message').innerHTML = allDone 
+            ? "💪 <b>BRAVO !</b> Tu as validé 10 reps partout. <br>Augmente de 2.5kg aujourd'hui."
+            : `🎯 <b>OBJECTIF :</b> Valide 10 reps sur tes ${currentSets.length} séries avant de monter le poids.`;
+
+        refreshSetsUI();
         renderChart(name);
     }
 
+    function refreshSetsUI() {
+        const container = document.getElementById('sets-container');
+        container.innerHTML = '';
+        currentSets.forEach((reps, i) => {
+            const row = document.createElement('div');
+            row.className = 'set-row';
+            row.innerHTML = `
+                <span class="oswald" style="color:var(--dim); font-size:12px;">SÉRIE ${i+1}</span>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button class="btn-qty" onclick="changeRep(${i},-1)">-</button>
+                    <span class="oswald" style="font-size:20px; width:25px; text-align:center;">${reps}</span>
+                    <button class="btn-qty" onclick="changeRep(${i},1)">+</button>
+                </div>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function changeRep(i, v) {
+        currentSets[i] = Math.max(0, currentSets[i] + v);
+        refreshSetsUI();
+    }
+
+    function addNewSet() { currentSets.push(8); refreshSetsUI(); }
     function closeM() { document.getElementById('modal').style.display = 'none'; }
 
-    function save() {
-        const s = document.getElementById('in-s').value;
-        const w = document.getElementById('in-w').value;
-        const r = document.getElementById('in-r').value;
-        if(!s || !w || !r) return;
-
-        const rm = Math.round(w * (1 + r / 30));
+    function saveSession() {
+        const weight = parseFloat(document.getElementById('main-weight').value);
+        if(!weight) return;
         const entry = {
-            date: new Date().toLocaleDateString('fr-FR'),
-            sets: s, weight: parseFloat(w), reps: r, rm: rm
+            date: new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'}),
+            weight: weight,
+            sets: [...currentSets],
+            avgReps: (currentSets.reduce((a,b)=>a+b,0) / currentSets.length).toFixed(1)
         };
-
-        if(!data[curExo]) data[curExo] = [];
-        data[curExo].push(entry);
-        localStorage.setItem('Elite_V6_Backup', JSON.stringify(data));
-        
-        document.getElementById('in-s').value = '';
-        document.getElementById('in-w').value = '';
-        document.getElementById('in-r').value = '';
-        
+        if(!logs[currentExo]) logs[currentExo] = [];
+        logs[currentExo].push(entry);
+        localStorage.setItem('Elite_Auto_V2', JSON.stringify(logs));
         closeM();
-        setSession(document.getElementById('u1-btn').classList.contains('active') ? 'U1' : 'U2');
+        load(document.getElementById('btnU1').classList.contains('active') ? 'U1' : 'U2');
     }
 
     function renderChart(name) {
-        const h = data[name] || [];
-        const ctx = document.getElementById('miniChart').getContext('2d');
-        if(curChart) curChart.destroy();
-        curChart = new Chart(ctx, {
+        const h = logs[name] || [];
+        const ctx = document.getElementById('chart').getContext('2d');
+        if(chartObj) chartObj.destroy();
+        chartObj = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: h.map(l => l.date),
-                datasets: [{
-                    data: h.map(l => l.weight),
-                    borderColor: '#e61e25',
-                    tension: 0.4,
-                    pointRadius: 2,
-                    borderWidth: 2,
-                    fill: false
-                }]
+                datasets: [
+                    {
+                        label: 'Poids (kg)',
+                        data: h.map(l => l.weight),
+                        borderColor: '#e61e25',
+                        backgroundColor: 'rgba(230, 30, 37, 0.1)',
+                        yAxisID: 'y',
+                        fill: true,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Reps (Moy)',
+                        data: h.map(l => l.avgReps),
+                        borderColor: '#555',
+                        borderDash: [5, 5],
+                        yAxisID: 'y1',
+                        tension: 0.3
+                    }
+                ]
             },
             options: { 
-                maintainAspectRatio: false, 
+                maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
-                scales: { x: { display: false }, y: { display: true, grid:{color:'#111'}, ticks:{color:'#333'} } }
+                scales: { 
+                    y: { position:'left', grid:{color:'#111'}, ticks:{color:'#e61e25', font:{family:'Oswald'}} },
+                    y1: { position:'right', grid:{display:false}, ticks:{color:'#555'} }
+                }
             }
         });
     }
 
-    // --- Fonctions de Sauvegarde ---
     function exportData() {
-        const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
+        const blob = new Blob([JSON.stringify(logs)], {type:'application/json'});
         const a = document.createElement('a');
-        a.href = url;
-        a.download = `backup_muscu_${new Date().toLocaleDateString()}.json`;
+        a.href = URL.createObjectURL(blob);
+        a.download = `elite_backup_${new Date().toLocaleDateString()}.json`;
         a.click();
     }
 
-    function importData() { document.getElementById('importFile').click(); }
-
-    function processImport(input) {
-        const file = input.files[0];
-        const reader = new FileReader();
-        reader.onload = function() {
-            try {
-                const importedData = JSON.parse(reader.result);
-                if(confirm("Importer ces données ? Cela remplacera ton historique actuel.")) {
-                    data = importedData;
-                    localStorage.setItem('Elite_V6_Backup', JSON.stringify(data));
-                    location.reload();
-                }
-            } catch(e) { alert("Erreur : Fichier invalide."); }
-        };
-        reader.readAsText(file);
-    }
-
-    setSession('U1');
+    load('U1');
 </script>
-
-<style>
-    @keyframes pulse {
-        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(230, 30, 37, 0.7); }
-        70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(230, 30, 37, 0); }
-        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(230, 30, 37, 0); }
-    }
-</style>
 </body>
 </html>
