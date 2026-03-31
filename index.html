@@ -3,144 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ELITE TRACKER - NEXT GEN</title>
+    <title>ELITE TRACKER - COMMAND MODE</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <style>
         :root { 
-            --bg: #050505; --card: #111111; --accent: #ff0000; --accent-dark: #8b0000;
-            --gradient: linear-gradient(135deg, #ff1f1f 0%, #8b0000 100%);
-            --text: #ffffff; --dim: #888; --green: #00ff88; --glass: rgba(255, 255, 255, 0.03);
+            --bg: #050505; --card: #111; --accent: #00ff88; --accent-glow: rgba(0, 255, 136, 0.3);
+            --text: #fff; --dim: #555; --red: #ff3b3b; --reps-color: #ffffff;
         }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; padding-top: 40px; }
+        h1, h2, .oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; }
+
+        .header { border-left: 5px solid var(--accent); padding-left: 15px; margin-bottom: 25px; }
+        .header h1 { margin: 0; font-size: 26px; text-shadow: 0 0 10px var(--accent-glow); }
         
-        body { 
-            font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); 
-            margin: 0; padding: 20px; padding-top: 40px;
-            background-image: radial-gradient(circle at 50% 0%, #1a0000 0%, #050505 50%);
-        }
+        .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
+        .nav-btn { background: #0f0f0f; border: 1px solid #222; color: var(--dim); padding: 15px; border-radius: 10px; cursor: pointer; font-family: 'Oswald'; }
+        .nav-btn.active { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
-        h1, h2, .oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+        .exo-card { background: var(--card); border: 1px solid #222; padding: 18px; border-radius: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+        .exo-info b { font-size: 17px; display: block; color: #fff; }
+        .exo-info span { color: var(--dim); font-size: 11px; }
 
-        /* Header avec lueur */
-        .header { border-left: 5px solid var(--accent); padding-left: 15px; margin-bottom: 30px; position: relative; }
-        .header h1 { font-size: 32px; text-shadow: 0 0 15px rgba(255, 0, 0, 0.3); }
-        .header span { color: var(--accent); font-size: 11px; font-weight: 800; }
+        .status-badge { font-size: 9px; padding: 4px 8px; border-radius: 4px; font-weight: 900; margin-top: 8px; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-up { background: rgba(0, 255, 136, 0.15); color: var(--accent); border: 1px solid var(--accent); box-shadow: 0 0 8px rgba(0, 255, 136, 0.2); }
+        .badge-stay { background: rgba(255, 255, 255, 0.05); color: #444; border: 1px solid #222; }
 
-        /* Navigation en relief */
-        .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
-        .nav-btn { 
-            background: #0f0f0f; border: 1px solid #222; color: var(--dim); padding: 18px; 
-            border-radius: 12px; cursor: pointer; font-family: 'Oswald'; font-size: 14px;
-            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 10px rgba(0,0,0,0.5);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .nav-btn.active { 
-            background: var(--gradient); color: white; border-color: transparent;
-            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.2); transform: translateY(-2px);
-        }
+        .modal { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; padding: 20px; overflow-y: auto; }
+        .last-perf-banner { background: rgba(255, 255, 255, 0.03); border: 1px solid #333; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
+        .last-perf-banner small { display: block; font-size: 9px; color: var(--accent); font-weight: bold; letter-spacing: 1px; margin-bottom: 5px; }
+        .last-perf-banner div { font-family: 'Oswald'; font-size: 20px; color: #fff; }
 
-        /* Cartes Exercices avec Glassmorphism */
-        .exo-card { 
-            background: var(--glass); border: 1px solid rgba(255,255,255,0.08); 
-            padding: 20px; border-radius: 16px; margin-bottom: 15px; 
-            display: flex; justify-content: space-between; align-items: center;
-            backdrop-filter: blur(10px); transition: 0.2s;
-        }
-        .exo-card:active { transform: scale(0.98); background: rgba(255,255,255,0.05); }
+        .input-box { background: #0c0c0c; border: 1px solid #222; padding: 20px; border-radius: 20px; margin-bottom: 15px; }
+        .weight-input { width: 100%; background: transparent; border: none; color: var(--accent); font-size: 48px; font-family: 'Oswald'; text-align: center; outline: none; }
 
-        .status-badge { 
-            font-size: 10px; padding: 4px 10px; border-radius: 20px; font-weight: 900; 
-            margin-top: 8px; display: inline-block; text-transform: uppercase;
-        }
-        .badge-up { background: rgba(0, 255, 136, 0.1); color: var(--green); border: 1px solid var(--green); box-shadow: 0 0 10px rgba(0, 255, 136, 0.2); }
-        .badge-stay { background: rgba(255, 255, 255, 0.05); color: var(--dim); border: 1px solid #333; }
+        .set-row { display: flex; justify-content: space-between; align-items: center; background: #151515; padding: 12px; border-radius: 10px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.02); }
+        .btn-qty { background: #252525; color: white; border: none; width: 42px; height: 42px; border-radius: 10px; font-size: 22px; font-weight: bold; }
+        
+        .btn-save { background: var(--accent); color: #000; border: none; width: 100%; padding: 20px; font-family: 'Oswald'; font-size: 18px; border-radius: 15px; font-weight: bold; margin-top: 15px; box-shadow: 0 5px 20px var(--accent-glow); }
 
-        /* Modal Saisie High-Tech */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; padding: 25px; overflow-y: auto; }
-        .input-section { 
-            background: linear-gradient(180deg, #151515 0%, #0a0a0a 100%); 
-            border: 1px solid #222; padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        }
-        .weight-input { 
-            width: 100%; background: transparent; border: none; color: #fff; font-size: 48px; 
-            font-family: 'Oswald'; text-align: center; outline: none; margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(255,255,255,0.1);
-        }
-
-        .set-row { 
-            display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; margin-bottom: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .btn-qty { 
-            background: #1a1a1a; color: white; border: 1px solid #333; width: 45px; height: 45px; 
-            border-radius: 12px; font-size: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        .btn-qty:active { background: #333; transform: scale(0.9); }
-
-        .btn-save { 
-            background: var(--gradient); color: white; border: none; width: 100%; padding: 20px; 
-            font-family: 'Oswald'; font-size: 20px; border-radius: 14px; font-weight: bold; 
-            margin-top: 25px; box-shadow: 0 10px 25px rgba(255, 0, 0, 0.3);
-        }
-
-        .chart-box { height: 200px; margin-top: 30px; border-radius: 16px; background: rgba(0,0,0,0.3); padding: 10px; border: 1px solid #111; }
-
-        .btn-admin { 
-            background: rgba(255,255,255,0.03); border: 1px solid #222; color: #666; 
-            padding: 12px 25px; border-radius: 50px; font-size: 10px; font-family: 'Oswald';
-        }
+        .chart-box { height: 280px; margin-top: 30px; background: #080808; border-radius: 20px; padding: 15px; border: 1px solid #111; }
+        
+        .history-row { display: flex; justify-content: space-between; align-items: center; background: #0a0a0a; padding: 15px; border-radius: 10px; margin-top: 8px; border-left: 4px solid var(--accent); }
+        .history-row .poids { font-family: 'Oswald'; color: var(--accent); font-size: 18px; }
+        .history-row .reps { font-size: 13px; color: #eee; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div>
-            <span>PERFORMANCE ANALYTICS</span>
-            <h1 id="title">SESSION 1</h1>
-        </div>
-        <button onclick="exportData()" style="background:var(--glass); border:1px solid #333; color:var(--dim); font-size:10px; padding:8px; border-radius:8px;">EXPORT</button>
+        <span>BIOMETRICS ANALYZER</span>
+        <h1 id="title">SESSION 1</h1>
     </div>
 
     <div class="nav">
-        <button class="nav-btn active" id="btnU1" onclick="load('U1')">SESSION UPPER 1</button>
-        <button class="nav-btn" id="btnU2" onclick="load('U2')">SESSION UPPER 2</button>
+        <button class="nav-btn active" id="btnU1" onclick="load('U1')">UPPER 1</button>
+        <button class="nav-btn" id="btnU2" onclick="load('U2')">UPPER 2</button>
     </div>
 
     <div id="exo-list"></div>
 
-    <div style="text-align:center; margin-top:40px; margin-bottom: 40px;">
-        <button class="btn-admin" onclick="manageExos()">GESTION EXERCICES</button>
-    </div>
-
     <div id="modal" class="modal">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-            <h2 id="m-name" style="margin:0; font-size:24px;"></h2>
-            <span onclick="closeM()" style="background:#1a1a1a; padding:10px 15px; border-radius:12px; color:var(--accent); font-weight:bold; cursor:pointer;">✕</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 id="m-name" class="oswald" style="font-size:22px; margin:0; color:var(--accent);"></h2>
+            <span onclick="closeM()" style="color:var(--red); font-family:Oswald; font-weight:bold; cursor:pointer;">✕</span>
         </div>
 
-        <div class="input-section">
-            <label style="color:var(--dim); font-size:10px; display:block; text-align:center; letter-spacing:2px;">CHARGE ACTUELLE</label>
-            <input type="number" id="main-weight" class="weight-input" inputmode="decimal" placeholder="0">
-            <div style="text-align:center; color:var(--accent); font-family:Oswald; margin-bottom:20px; font-size:14px;">KILOGRAMMES</div>
-            
+        <div id="last-perf-display" class="last-perf-banner">
+            <small>RECORD PRÉCÉDENT</small>
+            <div id="last-val-text">-- kg | -- reps</div>
+        </div>
+
+        <div class="input-box">
+            <label style="display:block; text-align:center; font-size:10px; color:var(--dim); margin-bottom:5px; font-weight:800;">CHARGE EN KG</label>
+            <input type="number" id="main-weight" class="weight-input" inputmode="decimal">
             <div id="sets-container"></div>
-            <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #444; color:#666; padding:12px; margin-top:15px; border-radius:12px; font-size:11px;">+ AJOUTER UNE SÉRIE</button>
+            <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #333; color:#555; padding:10px; margin-top:15px; border-radius:8px; font-size:11px;">+ AJOUTER UNE SÉRIE</button>
         </div>
 
         <button class="btn-save" onclick="saveSession()">ENREGISTRER LA PERFORMANCE</button>
         
         <div class="chart-box"><canvas id="chart"></canvas></div>
 
-        <div id="history-list" style="margin-top:30px;"></div>
+        <div style="margin-top:40px;">
+            <h3 class="oswald" style="font-size:14px; color:var(--dim); letter-spacing:1px; margin-bottom:15px;">JOURNAL D'ENTRAÎNEMENT</h3>
+            <div id="history-list"></div>
+        </div>
     </div>
 
 <script>
-    let config = JSON.parse(localStorage.getItem('Elite_Config_V4')) || {
+    Chart.register(ChartDataLabels);
+
+    let config = JSON.parse(localStorage.getItem('Elite_Config_V6')) || {
         'U1': ["Développé couché", "Tirage vertical prise serré", "Tirage horizontal", "Elevations latérales", "Curl marteau"],
         'U2': ["Développé couché barre", "Tirage horizontal", "Tirage vertical", "Face pull", "Elevation latérale"]
     };
-    let logs = JSON.parse(localStorage.getItem('Elite_Logs_V4')) || {};
+    let logs = JSON.parse(localStorage.getItem('Elite_Logs_V6')) || {};
     let currentExo = ""; let currentSets = []; let currentSessId = 'U1'; let chartObj = null;
 
     function load(id) {
@@ -153,21 +112,24 @@
         list.innerHTML = '';
         config[id].forEach(name => {
             const h = logs[name] || []; const last = h.length > 0 ? h[h.length-1] : null;
-            let statusHtml = '<span class="status-badge badge-stay">EN ATTENTE</span>';
+            
+            // Logique de badge
+            let badgeHtml = '<span class="status-badge badge-stay">VISER 10 REPS</span>';
             if(last) {
                 const allDone = last.sets.every(r => r >= 10);
-                statusHtml = allDone ? '<span class="status-badge badge-up">▲ PROGRESSION</span>' : '<span class="status-badge badge-stay">OBJECTIF 10 REPS</span>';
+                if(allDone) badgeHtml = '<span class="status-badge badge-up">AUGMENTE TA CHARGE</span>';
             }
+
             const card = document.createElement('div');
             card.className = 'exo-card';
             card.onclick = () => openM(name);
             card.innerHTML = `
-                <div>
-                    <div class="oswald" style="font-size:18px;">${name}</div>
-                    <div style="font-size:12px; color:var(--dim); margin-top:4px;">${last ? last.weight+'kg • '+last.sets.join('/') : 'Pas encore de données'}</div>
-                    ${statusHtml}
+                <div class="exo-info">
+                    <b class="oswald">${name}</b>
+                    <span>${last ? last.weight+'kg • '+last.sets.join('/') : 'Données vierges'}</span><br>
+                    ${badgeHtml}
                 </div>
-                <div style="background:var(--gradient); width:35px; height:35px; border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 15px rgba(255,0,0,0.2)">+</div>
+                <div style="background:var(--accent); width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#000; font-weight:bold;">+</div>
             `;
             list.appendChild(card);
         });
@@ -175,9 +137,18 @@
 
     function openM(name) {
         currentExo = name; const h = logs[name] || [];
-        const last = h.length > 0 ? h[h.length-1] : { weight: '', sets: [8, 8, 8] };
-        currentSets = [...last.sets];
-        document.getElementById('main-weight').value = last.weight;
+        const last = h.length > 0 ? h[h.length-1] : null;
+        
+        if(last) {
+            document.getElementById('last-val-text').innerText = `${last.weight} kg | ${last.sets.join(' / ')} reps`;
+            document.getElementById('main-weight').value = last.weight;
+            currentSets = [...last.sets];
+        } else {
+            document.getElementById('last-val-text').innerText = "Nouvel exercice";
+            document.getElementById('main-weight').value = "";
+            currentSets = [10, 10, 10];
+        }
+
         document.getElementById('modal').style.display = 'block';
         document.getElementById('m-name').innerText = name;
         refreshSetsUI(); renderChart(name); renderHistory(name);
@@ -187,10 +158,10 @@
         const container = document.getElementById('sets-container');
         container.innerHTML = currentSets.map((reps, i) => `
             <div class="set-row">
-                <span class="oswald" style="color:var(--dim); font-size:12px;">SÉRIE ${i+1}</span>
+                <span class="oswald" style="color:var(--dim); font-size:11px;">SET ${i+1}</span>
                 <div style="display:flex; align-items:center; gap:20px;">
                     <button class="btn-qty" onclick="changeRep(${i},-1)">-</button>
-                    <span class="oswald" style="font-size:24px; width:30px; text-align:center;">${reps}</span>
+                    <span class="oswald" style="font-size:24px; width:30px; text-align:center; color:white;">${reps}</span>
                     <button class="btn-qty" onclick="changeRep(${i},1)">+</button>
                 </div>
             </div>
@@ -198,16 +169,21 @@
     }
 
     function changeRep(i, v) { currentSets[i] = Math.max(0, currentSets[i] + v); refreshSetsUI(); }
-    function addNewSet() { currentSets.push(8); refreshSetsUI(); }
+    function addNewSet() { currentSets.push(10); refreshSetsUI(); }
     function closeM() { document.getElementById('modal').style.display = 'none'; }
 
     function saveSession() {
         const weight = parseFloat(document.getElementById('main-weight').value);
         if(isNaN(weight)) return;
-        const entry = { date: new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'}), weight, sets: [...currentSets] };
+        const entry = { 
+            date: new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'}), 
+            weight, 
+            sets: [...currentSets],
+            avgReps: parseFloat((currentSets.reduce((a,b)=>a+b,0) / currentSets.length).toFixed(1))
+        };
         if(!logs[currentExo]) logs[currentExo] = [];
         logs[currentExo].push(entry);
-        localStorage.setItem('Elite_Logs_V4', JSON.stringify(logs));
+        localStorage.setItem('Elite_Logs_V6', JSON.stringify(logs));
         closeM(); load(currentSessId);
     }
 
@@ -218,17 +194,29 @@
             type: 'line',
             data: {
                 labels: h.map(l => l.date),
-                datasets: [{
-                    data: h.map(l => l.weight),
-                    borderColor: '#ff0000', borderWidth: 3, pointBackgroundColor: '#fff',
-                    fill: true, backgroundColor: 'rgba(255, 0, 0, 0.05)', tension: 0.4
-                }]
+                datasets: [
+                    {
+                        label: 'Poids (kg)',
+                        data: h.map(l => l.weight),
+                        borderColor: '#00ff88', borderWidth: 4, yAxisID: 'yWeight',
+                        pointBackgroundColor: '#00ff88', pointRadius: 4, tension: 0.3,
+                        datalabels: { color: '#00ff88', align: 'top', offset: 5, font: {family:'Oswald', weight:'bold', size:11}, formatter: (v)=>v+'kg' }
+                    },
+                    {
+                        label: 'Reps (moy)',
+                        data: h.map(l => l.avgReps),
+                        borderColor: '#ffffff', borderWidth: 2, borderDash: [5, 5], yAxisID: 'yReps',
+                        pointRadius: 3, pointBackgroundColor: '#ffffff', tension: 0.3,
+                        datalabels: { color: '#ffffff', align: 'bottom', offset: 5, font: {size:9}, formatter: (v)=>v+' r' }
+                    }
+                ]
             },
             options: { 
-                maintainAspectRatio: false, plugins: { legend: { display: false } },
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
                 scales: { 
-                    y: { grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'#444', font:{family:'Oswald'}} },
-                    x: { ticks:{color:'#444'} }
+                    yWeight: { type: 'linear', position: 'left', grid:{color:'#111'}, ticks:{display:false} },
+                    yReps: { type: 'linear', position: 'right', grid:{display:false}, ticks:{display:false} }
                 }
             }
         });
@@ -237,23 +225,15 @@
     function renderHistory(name) {
         const h = logs[name] || [];
         document.getElementById('history-list').innerHTML = h.map((e, i) => `
-            <div style="display:flex; justify-content:space-between; padding:15px; background:var(--glass); border-radius:12px; margin-bottom:8px; font-size:12px; border:1px solid rgba(255,255,255,0.03)">
-                <span>${e.date} • <b>${e.weight}kg</b></span>
-                <span style="color:var(--accent)" onclick="deleteEntry('${name}',${i})">SUPPRIMER</span>
+            <div class="history-row">
+                <div><div class="poids">${e.weight} KG</div></div>
+                <div class="reps">${e.sets.join(' / ')}</div>
+                <div style="color:var(--red); font-size:12px; padding:5px;" onclick="deleteEntry('${name}',${i})">✕</div>
             </div>
         `).reverse().join('');
     }
 
-    function deleteEntry(name, i) { if(confirm("Supprimer ?")) { logs[name].splice(i, 1); localStorage.setItem('Elite_Logs_V4', JSON.stringify(logs)); renderHistory(name); renderChart(name); load(currentSessId); } }
-
-    function manageExos() {
-        const action = confirm("AJOUTER un exo ? (Non pour SUPPRIMER)");
-        if(action) { const n = prompt("Nom :"); if(n) { config[currentSessId].push(n); saveConfig(); } }
-        else { const n = prompt("Nom exact à supprimer :"); const idx = config[currentSessId].indexOf(n); if(idx>-1) { config[currentSessId].splice(idx,1); saveConfig(); } }
-    }
-    function saveConfig() { localStorage.setItem('Elite_Config_V4', JSON.stringify(config)); load(currentSessId); }
-    function exportData() { const b = new Blob([JSON.stringify({logs, config})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `backup_elite.json`; a.click(); }
-
+    function deleteEntry(name, i) { if(confirm("Supprimer cette séance ?")) { logs[name].splice(i, 1); localStorage.setItem('Elite_Logs_V6', JSON.stringify(logs)); renderHistory(name); renderChart(name); load(currentSessId); } }
     load('U1');
 </script>
 </body>
