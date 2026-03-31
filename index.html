@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Tracker Muscu</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #141414;
+            --accent-color: #2ecc71;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-transform: uppercase; letter-spacing: 2px; border-left: 4px solid var(--accent-color); padding-left: 15px; }
+        
+        .section-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { 
+            background: var(--card-bg); border: 1px solid #333; color: white; 
+            padding: 10px; flex: 1; cursor: pointer; border-radius: 5px;
+        }
+        .tab-btn.active { border-color: var(--accent-color); color: var(--accent-color); }
+
+        .exercise-card {
+            background: var(--card-bg); padding: 15px; border-radius: 10px;
+            margin-bottom: 15px; border-bottom: 2px solid #222;
+        }
+        .exercise-header { display: flex; justify-content: space-between; align-items: center; }
+        .rm-badge { color: var(--accent-color); font-weight: bold; font-size: 0.9em; }
+        
+        .input-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+        input { 
+            background: #1e1e1e; border: 1px solid #333; color: white; 
+            padding: 8px; border-radius: 5px; width: 80%;
+        }
+        button.add-btn {
+            background: var(--accent-color); border: none; color: black;
+            font-weight: bold; border-radius: 5px; cursor: pointer; padding: 10px; margin-top: 10px; width: 100%;
+        }
+        .chart-container { height: 150px; margin-top: 15px; display: none; }
+        
+        .custom-add { margin-top: 30px; padding: 15px; border: 1px dashed #444; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <p style="color: var(--accent-color); font-size: 0.8em; margin-bottom: 0;">OUTIL 01</p>
+    <h1>MES PERFORMANCES</h1>
+
+    <div class="section-tabs">
+        <button class="tab-btn active" onclick="filterCat('Haut')">Haut du corps</button>
+        <button class="tab-btn" onclick="filterCat('Bas')">Bas du corps</button>
+    </div>
+
+    <div id="exercise-list">
+        </div>
+
+    <div class="custom-add">
+        <h3>+ Ajouter un exercice perso</h3>
+        <input type="text" id="new-exo-name" placeholder="Nom de l'exercice">
+        <select id="new-exo-cat">
+            <option value="Haut">Haut du corps</option>
+            <option value="Bas">Bas du corps</option>
+        </select>
+        <button class="add-btn" onclick="addNewExercise()">Créer l'exercice</button>
+    </div>
+</div>
+
+<script>
+    // Liste initiale des exercices
+    const initialExercises = [
+        { name: "Développé couché", cat: "Haut" }, { name: "Développé incliné", cat: "Haut" },
+        { name: "Dips", cat: "Haut" }, { name: "Tractions", cat: "Haut" },
+        { name: "Rowing barre", cat: "Haut" }, { name: "Squat", cat: "Bas" },
+        { name: "Presse à cuisses", cat: "Bas" }, { name: "Soulevé de terre", cat: "Bas" }
+        // ... (J'ai mis les principaux, tu pourras en ajouter via l'interface)
+    ];
+
+    let data = JSON.parse(localStorage.getItem('muscuData')) || {};
+    let currentCat = 'Haut';
+
+    function calculate1RM(weight, reps) {
+        return (weight * (1 + reps / 30)).toFixed(1);
+    }
+
+    function saveData(exo, weight, reps) {
+        if (!weight || !reps) return;
+        const date = new Date().toLocaleDateString();
+        const rm = calculate1RM(weight, reps);
+        
+        if (!data[exo]) data[exo] = [];
+        data[exo].push({ date, weight, reps, rm: parseFloat(rm) });
+        
+        localStorage.setItem('muscuData', JSON.stringify(data));
+        render();
+    }
+
+    function addNewExercise() {
+        const name = document.getElementById('new-exo-name').value;
+        const cat = document.getElementById('new-exo-cat').value;
+        if(name) {
+            if(!data[name]) data[name] = [];
+            // On stocke la catégorie dans un objet spécial
+            localStorage.setItem('cat_'+name, cat);
+            render();
+        }
+    }
+
+    function render() {
+        const list = document.getElementById('exercise-list');
+        list.innerHTML = '';
+        
+        // Fusionner la liste initiale et les nouveaux exercices créés
+        let allExos = [...initialExercises.map(e => e.name), ...Object.keys(data)];
+        allExos = [...new Set(allExos)]; // Supprimer doublons
+
+        allExos.forEach(exoName => {
+            const history = data[exoName] || [];
+            const cat = localStorage.getItem('cat_'+exoName) || (initialExercises.find(e => e.name === exoName)?.cat);
+            
+            if (cat !== currentCat) return;
+
+            const lastRM = history.length > 0 ? history[history.length-1].rm : '--';
+
+            const card = document.createElement('div');
+            card.className = 'exercise-card';
+            card.innerHTML = `
+                <div class="exercise-header">
+                    <div>
+                        <div style="font-size: 0.7em; color: var(--accent-color)">PERFORMANCE</div>
+                        <div style="font-weight: bold; text-transform: uppercase;">${exoName}</div>
+                    </div>
+                    <div class="rm-badge">1RM: ${lastRM} kg</div>
+                </div>
+                <div class="input-group">
+                    <input type="number" placeholder="Kg" id="w-${exoName}">
+                    <input type="number" placeholder="Reps" id="r-${exoName}">
+                    <button class="add-btn" style="margin:0" onclick="saveData('${exoName}', document.getElementById('w-${exoName}').value, document.getElementById('r-${exoName}').value)">+</button>
+                </div>
+                <div class="chart-container" id="chart-cont-${exoName}">
+                    <canvas id="canvas-${exoName}"></canvas>
+                </div>
+            `;
+            list.appendChild(card);
+
+            if (history.length >= 2) {
+                document.getElementById(`chart-cont-${exoName}`).style.display = 'block';
+                new Chart(document.getElementById(`canvas-${exoName}`), {
+                    type: 'line',
+                    data: {
+                        labels: history.map(h => h.date),
+                        datasets: [{
+                            label: 'Evolution 1RM',
+                            data: history.map(h => h.rm),
+                            borderColor: '#2ecc71',
+                            tension: 0.3
+                        }]
+                    },
+                    options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } }
+                });
+            }
+        });
+    }
+
+    function filterCat(cat) {
+        currentCat = cat;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>
