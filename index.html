@@ -35,7 +35,6 @@
 
         h1, h2, .oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* HEADER AVEC TITRES EMPILES */
         .header { 
             border-left: 5px solid var(--primary); 
             padding: 12px 20px; 
@@ -55,15 +54,33 @@
             line-height: 1.2;
         }
 
-        .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 35px; }
+        /* NAVIGATION DÉFILANTE (SCROLLBAR) */
+        .nav { 
+            display: flex; 
+            overflow-x: auto; 
+            gap: 12px; 
+            margin-bottom: 35px; 
+            padding-bottom: 10px;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE 10+ */
+            scroll-snap-type: x mandatory;
+        }
+        .nav::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
         .nav-btn {
-            border-radius: 14px; cursor: pointer; font-family: 'Oswald'; font-size: 13px; padding: 20px;
+            flex: 0 0 140px; /* Largeur fixe pour chaque bouton */
+            scroll-snap-align: start;
+            border-radius: 14px; cursor: pointer; font-family: 'Oswald'; font-size: 11px; padding: 15px 10px;
             transition: 0.3s; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05);
             background: #0f0f0f; color: var(--dim);
+            text-align: center;
         }
 
-        .active-u1 { background: linear-gradient(145deg, #ff1f1f, #8b0000) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 15px 35px rgba(255, 0, 0, 0.35); }
-        .active-u2 { background: linear-gradient(145deg, #ffcc00, #b88600) !important; color: black !important; transform: translateY(-4px); box-shadow: 0 15px 35px rgba(255, 204, 0, 0.3); }
+        /* ÉTATS ACTIFS PAR SÉANCE */
+        .active-u1 { background: linear-gradient(145deg, #ff1f1f, #8b0000) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3); }
+        .active-u2 { background: linear-gradient(145deg, #ffcc00, #b88600) !important; color: black !important; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(255, 204, 0, 0.3); }
+        .active-l1 { background: linear-gradient(145deg, #ff8c00, #cc7000) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(255, 140, 0, 0.3); }
+        .active-l2 { background: linear-gradient(145deg, #ff00ff, #b300b3) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(255, 0, 255, 0.3); }
 
         .exo-card {
             background: var(--card); border: 1px solid rgba(255,255,255,0.03);
@@ -101,8 +118,10 @@
     </div>
 
     <div class="nav">
-        <button class="nav-btn active-u1" id="btnU1" onclick="load('U1')">SESSION UPPER 1</button>
-        <button class="nav-btn" id="btnU2" onclick="load('U2')">SESSION UPPER 2</button>
+        <button class="nav-btn" id="btnU1" onclick="load('U1')">UPPER 1</button>
+        <button class="nav-btn" id="btnU2" onclick="load('U2')">UPPER 2</button>
+        <button class="nav-btn" id="btnL1" onclick="load('L1')">LOWER 1</button>
+        <button class="nav-btn" id="btnL2" onclick="load('L2')">LOWER 2</button>
     </div>
 
     <div id="exo-list"></div>
@@ -116,25 +135,20 @@
             <h2 id="m-name" style="margin:0; font-size:28px;"></h2>
             <span onclick="closeM()" style="background:rgba(255,255,255,0.1); padding:15px; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✕</span>
         </div>
-
         <div class="record-banner" style="border-left: 4px solid var(--primary); background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; margin-bottom: 25px;">
             <small style="color:var(--dim); font-size:10px; font-weight:bold;">DERNIÈRE PERFORMANCE</small>
             <div id="last-record-text" style="font-family:Oswald; font-size:24px; margin-top:5px;"></div>
         </div>
-
         <div class="input-section" style="background: rgba(0,0,0,0.6); padding: 25px; border-radius: 30px;">
             <input type="number" id="main-weight" style="width:100%; background:transparent; border:none; color:#fff; font-size:60px; font-family:Oswald; text-align:center; outline:none;" inputmode="decimal">
             <div style="text-align:center; color:var(--primary); font-family:Oswald; margin-bottom:30px; font-size:14px;">KILOGRAMMES</div>
             <div id="sets-container"></div>
             <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #444; color:#888; padding:18px; margin-top:20px; border-radius:15px; font-size:12px;">+ AJOUTER SÉRIE</button>
         </div>
-
         <button class="btn-save" onclick="saveSession()">ENREGISTRER LA SÉANCE</button>
-       
         <div style="height: 250px; margin-top:40px; background:rgba(0,0,0,0.3); border-radius:25px; padding:20px;">
             <canvas id="chart"></canvas>
         </div>
-
         <h3 class="oswald" style="margin-top:40px; font-size:16px; color:var(--dim);">HISTORIQUE</h3>
         <div id="history-list" style="margin-top:15px; padding-bottom:50px;"></div>
     </div>
@@ -144,7 +158,9 @@
 
     let config = JSON.parse(localStorage.getItem('Elite_VNext_Config')) || {
         'U1': ["Développé couché", "Tirage vertical prise serré", "Développé militaire barre", "Tirage horizontale", "Curl marteau"],
-        'U2': ["Développé couché barre", "Tirage horizontal", "Tirage vertical", "Face pull", "Elevation latérale"]
+        'U2': ["Développé couché barre", "Tirage horizontal", "Tirage vertical", "Face pull", "Elevation latérale"],
+        'L1': ["Soulevé de terre", "Fente barre", "Presse à cuisse", "Leg curl"],
+        'L2': ["Squat barre", "Fente barre", "Leg extension", "Presse unilatéral"]
     };
     let logs = JSON.parse(localStorage.getItem('Elite_VNext_Logs')) || {};
     let currentExo = ""; let currentSets = []; let currentSessId = 'U1'; let chartObj = null;
@@ -152,35 +168,44 @@
     function load(id) {
         currentSessId = id;
         const root = document.documentElement;
+        
+        // Reset classes
+        ['btnU1', 'btnU2', 'btnL1', 'btnL2'].forEach(btnId => document.getElementById(btnId).className = 'nav-btn');
+
         if(id === 'U1') {
             root.style.setProperty('--primary', '#ff0000');
             root.style.setProperty('--primary-glow', 'rgba(255, 0, 0, 0.4)');
-            root.style.setProperty('--primary-dark', '#3a0000');
             root.style.setProperty('--bg-top', '#3a0000');
             document.getElementById('btnU1').className = 'nav-btn active-u1';
-            document.getElementById('btnU2').className = 'nav-btn';
             document.getElementById('title').innerText = 'UPPER 1';
-        } else {
+        } else if(id === 'U2') {
             root.style.setProperty('--primary', '#ffcc00');
             root.style.setProperty('--primary-glow', 'rgba(255, 204, 0, 0.3)');
-            root.style.setProperty('--primary-dark', '#221a00');
             root.style.setProperty('--bg-top', '#332200');
             document.getElementById('btnU2').className = 'nav-btn active-u2';
-            document.getElementById('btnU1').className = 'nav-btn';
             document.getElementById('title').innerText = 'UPPER 2';
+        } else if(id === 'L1') {
+            root.style.setProperty('--primary', '#ff8c00'); // Orange
+            root.style.setProperty('--primary-glow', 'rgba(255, 140, 0, 0.3)');
+            root.style.setProperty('--bg-top', '#3d2200');
+            document.getElementById('btnL1').className = 'nav-btn active-l1';
+            document.getElementById('title').innerText = 'LOWER 1';
+        } else if(id === 'L2') {
+            root.style.setProperty('--primary', '#ff00ff'); // Rose
+            root.style.setProperty('--primary-glow', 'rgba(255, 0, 255, 0.3)');
+            root.style.setProperty('--bg-top', '#3d003d');
+            document.getElementById('btnL2').className = 'nav-btn active-l2';
+            document.getElementById('title').innerText = 'LOWER 2';
         }
 
         const list = document.getElementById('exo-list');
         list.innerHTML = '';
-        
         config[id].forEach((name, index) => {
             const h = logs[name] || []; const last = h.length > 0 ? h[h.length-1] : null;
             let badgeClass = "status-badge", badgeText = "CIBLE 10 REPS", badgeIcon = "";
             if(last && last.sets.every(r => r >= 10)) {
-                badgeClass = "status-badge badge-success"; badgeText = "AUGMENTER CHARGE";
-                badgeIcon = "↑";
+                badgeClass = "status-badge badge-success"; badgeText = "AUGMENTER CHARGE"; badgeIcon = "↑";
             }
-            
             const card = document.createElement('div');
             card.className = 'exo-card';
             card.innerHTML = `
@@ -200,19 +225,15 @@
         const name = prompt("Nom du nouvel exercice :");
         if(name && name.trim() !== "") {
             config[currentSessId].push(name.trim());
-            saveConfig();
-            load(currentSessId);
+            saveConfig(); load(currentSessId);
         }
     }
-
     function deleteExo(index) {
-        if(confirm("Supprimer cet exercice de la liste ?")) {
+        if(confirm("Supprimer cet exercice ?")) {
             config[currentSessId].splice(index, 1);
-            saveConfig();
-            load(currentSessId);
+            saveConfig(); load(currentSessId);
         }
     }
-
     function saveConfig() { localStorage.setItem('Elite_VNext_Config', JSON.stringify(config)); }
 
     function openM(name) {
@@ -269,13 +290,15 @@
                 labels: h.map(l => l.date),
                 datasets: [{
                     data: h.map(l => l.weight),
-                    borderColor: '#ff0000', borderWidth: 4, tension: 0.35, pointBackgroundColor: '#fff',
+                    borderColor: rootStyle().getPropertyValue('--primary'), borderWidth: 4, tension: 0.35, pointBackgroundColor: '#fff',
                     datalabels: { color: '#fff', align: 'top', font:{family:'Oswald', size:11, weight:'bold'} }
                 }]
             },
             options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#444' } } } }
         });
     }
+
+    function rootStyle() { return getComputedStyle(document.documentElement); }
 
     function renderHistory(name) {
         const h = logs[name] || [];
