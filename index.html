@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AFITNESS TRACKER - ELITE</title>
+    <title>AFITNESS TRACKER - ELITE RELIEF</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* Couleurs dynamiques pilotées par le JS */
             --primary: #ff0000;
             --primary-glow: rgba(255, 0, 0, 0.4);
             --primary-dark: #3a0000;
             --bg-top: #2a0000;
+            
             --bg: #050505; 
-            --card: #121212; 
+            --card: rgba(18, 18, 18, 0.8); /* Fond semi-transparent pro */
             --text: #ffffff; 
             --dim: #888; 
             --success: #00ff88;
             --error: #ff4444;
+            --inner-glow: inset 0 1px 2px rgba(255,255,255,0.1); /* Lueur interne discrète */
         }
 
         * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
@@ -26,62 +29,89 @@
             background: radial-gradient(circle at 50% -10%, var(--bg-top) 0%, #0a0000 40%, #050505 100%);
             background-attachment: fixed;
             color: var(--text);
-            margin: 0; padding: 20px; padding-top: 30px;
+            margin: 0; padding: 20px; padding-top: 40px; /* Espace pour la barre de statut iPhone */
             transition: background 0.4s ease;
+            overflow-x: hidden;
         }
 
         h1, h2, .oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
 
         .header { 
-            border-left: 5px solid var(--primary); 
-            padding: 12px 20px; 
-            margin-bottom: 35px; 
+            border-left: 6px solid var(--primary); 
+            padding: 12px 20px; margin-bottom: 40px; 
             background: linear-gradient(90deg, var(--primary-glow) 0%, transparent 100%);
             border-radius: 4px 15px 15px 4px;
         }
-        .header span { display: block; color: var(--primary); font-weight: 900; font-size: 22px; text-shadow: 0 0 15px var(--primary-glow); }
-        .header h1 { font-size: 16px; margin: 5px 0 0 0; color: var(--dim); font-weight: 400; }
+        .header span { display: block; color: var(--primary); font-weight: 900; font-size: 26px; text-shadow: 0 0 15px var(--primary-glow); }
+        .header h1 { font-size: 13px; margin: 5px 0 0 0; color: var(--dim); letter-spacing: 4px; }
 
+        /* NAVIGATION DESIGN PREMIUM */
         .nav { 
-            display: flex; overflow-x: auto; gap: 12px; margin-bottom: 35px; padding: 10px 5px;
+            display: flex; overflow-x: auto; gap: 15px; margin-bottom: 35px; padding: 10px 5px;
             scrollbar-width: none; scroll-snap-type: x mandatory;
         }
         .nav::-webkit-scrollbar { display: none; }
 
         .nav-btn {
-            flex: 0 0 130px; scroll-snap-align: center; border-radius: 14px; cursor: pointer; font-family: 'Oswald'; font-size: 11px; padding: 15px 5px;
-            transition: 0.3s; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05);
-            background: #0f0f0f; color: var(--dim); text-align: center;
+            flex: 0 0 120px; scroll-snap-align: center; border-radius: 12px; cursor: pointer; font-family: 'Oswald'; font-size: 10px; padding: 18px 5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05);
+            background: #0f0f0f; color: var(--dim); text-align: center; box-shadow: var(--inner-glow);
         }
 
-        .active-u1 { background: linear-gradient(145deg, #ff1f1f, #8b0000) !important; color: white !important; box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3); }
-        .active-u2 { background: linear-gradient(145deg, #ffcc00, #b88600) !important; color: black !important; box-shadow: 0 10px 20px rgba(255, 204, 0, 0.3); }
-        .active-l1 { background: linear-gradient(145deg, #ff8c00, #cc7000) !important; color: white !important; box-shadow: 0 10px 20px rgba(255, 140, 0, 0.3); }
-        .active-l2 { background: linear-gradient(145deg, #ff00ff, #b300b3) !important; color: white !important; box-shadow: 0 10px 20px rgba(255, 0, 255, 0.3); }
+        .active-u1 { background: linear-gradient(145deg, #ff1f1f, #8b0000) !important; color: white !important; transform: scale(1.05); border-color: #ff1f1f; box-shadow: 0 8px 25px rgba(255, 0, 0, 0.35); }
+        .active-u2 { background: linear-gradient(145deg, #ffcc00, #b88600) !important; color: black !important; transform: scale(1.05); border-color: #ffcc00; box-shadow: 0 8px 25px rgba(255, 204, 0, 0.3); }
+        .active-l1 { background: linear-gradient(145deg, #ff8c00, #cc7000) !important; color: white !important; transform: scale(1.05); border-color: #ff8c00; box-shadow: 0 8px 25px rgba(255, 140, 0, 0.3); }
+        .active-l2 { background: linear-gradient(145deg, #ff00ff, #b300b3) !important; color: white !important; transform: scale(1.05); border-color: #ff00ff; box-shadow: 0 8px 25px rgba(255, 0, 255, 0.3); }
 
+        /* LES BULLES D'EXERCICES RESSORTENT (RELIEF + BLUR) */
         .exo-card {
-            background: var(--card); border: 1px solid rgba(255,255,255,0.03);
+            background: var(--card); 
+            border: 1px solid rgba(255,255,255,0.04);
             padding: 25px; border-radius: 24px; margin-bottom: 20px;
             display: flex; justify-content: space-between; align-items: center;
-            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            position: relative; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6), var(--inner-glow);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); /* Effet Verre */
+            transition: all 0.3s ease;
+        }
+        
+        /* Bordure lumineuse dynamique sur la bulle */
+        .exo-card::before {
+            content:''; position: absolute; inset: 0; border-radius: 24px;
+            padding: 2px; /* Epaisseur de la lueur */
+            background: linear-gradient(130deg, transparent 40%, var(--primary) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.6;
         }
 
-        .del-exo-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); color: #fff; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 10px; }
-        .status-badge { font-size: 9px; padding: 6px 14px; border-radius: 30px; font-weight: 800; margin-top: 10px; display: inline-flex; border: 1px solid rgba(255,255,255,0.1); }
+        .del-exo-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.05); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; font-size: 10px; z-index: 5; }
+        
         .badge-success { border-color: var(--success) !important; color: var(--success) !important; }
 
-        .modal { display: none; position: fixed; inset: 0; background: radial-gradient(circle at center, var(--primary-dark) 0%, #050505 100%); z-index: 1000; padding: 25px; overflow-y: auto; }
-        .btn-qty { background: #1a1a1a; color: white; border: 1px solid #333; width: 45px; height: 45px; border-radius: 12px; font-size: 20px; }
-        .btn-save { background: var(--primary); color: white; border: none; width: 100%; padding: 20px; font-family: 'Oswald'; font-size: 18px; border-radius: 20px; font-weight: bold; margin-top: 20px; margin-bottom: 30px; }
+        /* DESIGN DE LA MODAL (Saisie + Historique Haut) */
+        .modal { 
+            display: none; position: fixed; inset: 0; 
+            background: radial-gradient(circle at center, var(--primary-dark) 0%, #050505 100%); 
+            z-index: 1000; padding: 25px; overflow-y: auto; 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .m-close { background:rgba(255,255,255,0.1); padding:10px; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+        .btn-qty { background: #1a1a1a; color: white; border: 1px solid #333; width: 45px; height: 45px; border-radius: 12px; font-size: 20px; box-shadow: var(--inner-glow); }
+        .btn-save { background: var(--primary); color: white; border: none; width: 100%; padding: 22px; font-family: 'Oswald'; font-size: 18px; border-radius: 20px; font-weight: bold; margin-top: 30px; margin-bottom: 20px; box-shadow: 0 10px 25px var(--primary-glow); }
 
-        .history-item { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
+        /* ÉLÉMENTS D'HISTORIQUE HAUT DESIGN */
+        .history-item { background: rgba(255,255,255,0.02); padding: 18px; border-radius: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.03); box-shadow: var(--inner-glow); }
+        .status-badge { font-size: 9px; padding: 6px 14px; border-radius: 30px; font-weight: 800; margin-top: 10px; display: inline-flex; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <span>AFITNESS TRACKER</span>
-        <h1 id="title">UPPER 1</h1>
+        <span>AFITNESS</span>
+        <h1 id="title">TRACKER ELITE</h1>
     </div>
 
     <div class="nav">
@@ -93,32 +123,31 @@
 
     <div id="exo-list"></div>
 
-    <div style="text-align: center; margin: 40px 0;">
-        <button onclick="addExoPrompt()" style="background:none; border: 1px dashed #555; color:#888; padding:15px 40px; border-radius:15px; font-family:Oswald; cursor:pointer; width:100%;">+ AJOUTER UN EXERCICE</button>
+    <div style="text-align: center; margin: 50px 0;">
+        <button onclick="addExoPrompt()" style="background:rgba(255,255,255,0.03); border: 1px dashed #444; color:#aaa; padding:18px 40px; border-radius:18px; font-family:Oswald; cursor:pointer; width:100%; font-size:12px; box-shadow: var(--inner-glow);">+ AJOUTER UN EXERCICE MANUEL</button>
     </div>
 
     <div id="modal" class="modal">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 id="m-name" style="margin:0; font-size:24px;"></h2>
-            <span onclick="closeM()" style="background:rgba(255,255,255,0.1); padding:10px; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✕</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h2 id="m-name" style="margin:0; font-size:28px;"></h2>
+            <span onclick="closeM()" class="m-close">✕</span>
         </div>
 
-        <div id="record-banner" style="border-left: 4px solid var(--primary); background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-            <small style="color:var(--dim); font-size:10px; font-weight:bold;">DERNIER RECORD</small>
-            <div id="last-record-text" style="font-family:Oswald; font-size:20px; margin-top:5px;"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 class="oswald" style="font-size:14px; color:var(--dim); margin:0;">Historique Récent</h3>
+            <div id="last-record-text" style="font-family:Oswald; font-size:16px; color:var(--text); opacity:0.8;"></div>
         </div>
+        <div id="history-container" style="max-height: 220px; overflow-y: auto; margin-bottom: 30px; padding-right: 5px;"></div>
 
-        <div class="input-section" style="background: rgba(0,0,0,0.6); padding: 20px; border-radius: 20px;">
-            <input type="number" id="main-weight" style="width:100%; background:transparent; border:none; color:#fff; font-size:50px; font-family:Oswald; text-align:center; outline:none;" inputmode="decimal" placeholder="0">
-            <div style="text-align:center; color:var(--primary); font-family:Oswald; margin-bottom:20px; font-size:12px;">KG</div>
+        <h3 class="oswald" style="font-size:14px; color:var(--dim); margin-bottom:15px;">Nouvelle Séance</h3>
+        <div class="input-section" style="background: rgba(0,0,0,0.6); padding: 25px; border-radius: 25px; box-shadow: inset 0 0 15px rgba(0,0,0,0.5);">
+            <input type="number" id="main-weight" style="width:100%; background:transparent; border:none; color:#fff; font-size:60px; font-family:Oswald; text-align:center; outline:none; font-weight:bold;" inputmode="decimal" placeholder="0">
+            <div style="text-align:center; color:var(--primary); font-family:Oswald; margin-bottom:25px; font-size:14px; letter-spacing:3px;">KILOGRAMMES</div>
             <div id="sets-container"></div>
-            <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #444; color:#888; padding:12px; margin-top:15px; border-radius:12px; font-size:11px;">+ AJOUTER SÉRIE</button>
+            <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #444; color:#888; padding:15px; margin-top:20px; border-radius:12px; font-size:10px;">+ AJOUTER SÉRIE</button>
         </div>
 
         <button class="btn-save" onclick="saveSession()">ENREGISTRER LA SÉANCE</button>
-
-        <h3 class="oswald" style="font-size:14px; color:var(--dim); margin-bottom:15px;">Historique Récent</h3>
-        <div id="history-container"></div>
     </div>
 
 <script>
@@ -130,6 +159,9 @@
     };
 
     let config = JSON.parse(localStorage.getItem('Elite_VNext_Config')) || officialExos;
+    ['L1', 'L2'].forEach(session => { if (!config[session] || config[session].length === 0) config[session] = [...officialExos[session]]; });
+    localStorage.setItem('Elite_VNext_Config', JSON.stringify(config));
+
     let logs = JSON.parse(localStorage.getItem('Elite_VNext_Logs')) || {};
     let currentExo = ""; let currentSets = []; let currentSessId = 'U1';
 
@@ -139,21 +171,20 @@
         ['btnU1', 'btnU2', 'btnL1', 'btnL2'].forEach(b => document.getElementById(b).className = 'nav-btn');
 
         const themes = {
-            'U1': ['#ff0000', '#3a0000', 'UPPER 1', 'active-u1'],
-            'U2': ['#ffcc00', '#221a00', 'UPPER 2', 'active-u2'],
-            'L1': ['#ff8c00', '#3d2200', 'LOWER 1', 'active-l1'],
-            'L2': ['#ff00ff', '#3d003d', 'LOWER 2', 'active-l2']
+            'U1': ['#ff0000', '#3a0000', 'active-u1'],
+            'U2': ['#ffcc00', '#221a00', 'active-u2'],
+            'L1': ['#ff8c00', '#3d2200', 'active-l1'],
+            'L2': ['#ff00ff', '#3d003d', 'active-l2']
         };
 
         const theme = themes[id];
         root.style.setProperty('--primary', theme[0]);
         root.style.setProperty('--primary-dark', theme[1]);
-        document.getElementById('title').innerText = theme[2];
-        document.getElementById('btn' + id).className = 'nav-btn ' + theme[3];
+        root.style.setProperty('--primary-glow', theme[0] + '66'); // Lueur dynamique
+        document.getElementById('btn' + id).className = 'nav-btn ' + theme[2];
 
         const list = document.getElementById('exo-list');
         list.innerHTML = '';
-        
         if(!config[id]) config[id] = officialExos[id];
 
         config[id].forEach((name, index) => {
@@ -166,8 +197,8 @@
             card.innerHTML = `
                 <button class="del-exo-btn" onclick="event.stopPropagation(); deleteExo(${index});">✕</button>
                 <div onclick="openM('${name}')" style="width:100%">
-                    <div class="oswald">${name}</div>
-                    <div style="font-size:15px; color:var(--dim); font-weight:700;">${last ? last.weight+'KG • '+last.sets.join('/') : '--'}</div>
+                    <div class="oswald" style="font-size:18px;">${name}</div>
+                    <div style="font-size:16px; color:var(--dim); font-weight:700; margin-top:5px;">${last ? last.weight+'KG • '+last.sets.join('/') : '--'}</div>
                     <span class="${badgeClass}">${badgeText}</span>
                 </div>
             `;
@@ -178,7 +209,7 @@
     function openM(name) {
         currentExo = name; const h = logs[name] || []; const last = h[h.length-1];
         document.getElementById('m-name').innerText = name;
-        document.getElementById('last-record-text').innerText = last ? `${last.weight} kg | ${last.sets.join('/')}` : "AUCUNE DONNÉE";
+        document.getElementById('last-record-text').innerText = last ? `${last.weight} kg • ${last.sets.join('/')}` : "";
         document.getElementById('main-weight').value = last ? last.weight : "";
         currentSets = last ? [...last.sets] : [8,8,8];
         document.getElementById('modal').style.display = 'block';
@@ -189,37 +220,31 @@
     function renderHistory() {
         const container = document.getElementById('history-container');
         const h = logs[currentExo] || [];
-        if (h.length === 0) { container.innerHTML = '<p style="color:#444; font-size:12px;">Aucun historique.</p>'; return; }
+        if (h.length === 0) { container.innerHTML = '<p style="color:#555; font-size:12px; font-style:italic;">Aucun historique récent pour cet exercice.</p>'; return; }
         
         container.innerHTML = h.slice().reverse().map((entry, index) => `
             <div class="history-item">
                 <div>
-                    <div class="oswald" style="color:var(--primary); font-size:14px;">${entry.weight} KG</div>
-                    <div style="font-size:11px; color:var(--dim);">${entry.date || 'Séance'} • Reps: ${entry.sets.join('/')}</div>
+                    <div class="oswald" style="color:var(--primary); font-size:16px;">${entry.weight} KG</div>
+                    <div style="font-size:12px; color:var(--dim); font-weight:bold; margin-top:3px;">${entry.date || 'Séance'} • Reps: ${entry.sets.join('/')}</div>
                 </div>
-                <button onclick="deleteHistoryEntry(${h.length - 1 - index})" style="background:none; border:none; color:var(--error); font-size:18px; cursor:pointer;">✕</button>
+                <button onclick="deleteHistoryEntry(${h.length - 1 - index})" style="background:none; border:none; color:var(--error); font-size:18px; cursor:pointer; opacity:0.6;">✕</button>
             </div>
         `).join('');
     }
 
     function deleteHistoryEntry(idx) {
-        if(confirm("Supprimer cette séance de l'historique ?")) {
+        if(confirm("Effacer définitivement cette séance de l'historique ?")) {
             logs[currentExo].splice(idx, 1);
             localStorage.setItem('Elite_VNext_Logs', JSON.stringify(logs));
-            // Rafraîchir la vue
-            const h = logs[currentExo];
-            const last = h[h.length-1];
-            document.getElementById('last-record-text').innerText = last ? `${last.weight} kg | ${last.sets.join('/')}` : "AUCUNE DONNÉE";
-            renderHistory();
+            openM(currentExo); // Recharge tout
         }
     }
 
     function saveSession() {
         const w = parseFloat(document.getElementById('main-weight').value);
-        if(isNaN(w)) return;
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'});
-        const entry = { weight: w, sets: [...currentSets], date: dateStr };
+        if(isNaN(w) || w < 0) return;
+        const entry = { weight: w, sets: [...currentSets], date: new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'}) };
         if(!logs[currentExo]) logs[currentExo] = [];
         logs[currentExo].push(entry);
         localStorage.setItem('Elite_VNext_Logs', JSON.stringify(logs));
@@ -228,33 +253,18 @@
 
     function refreshSetsUI() {
         document.getElementById('sets-container').innerHTML = currentSets.map((r, i) => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:8px; border-radius:12px; margin-bottom:6px;">
-                <span class="oswald" style="color:var(--dim); font-size:10px;">SÉRIE ${i+1}</span>
-                <div style="display:flex; align-items:center; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:10px; border-radius:15px; margin-bottom:8px; box-shadow: var(--inner-glow);">
+                <span class="oswald" style="color:var(--dim); font-size:11px;">SÉRIE ${i+1}</span>
+                <div style="display:flex; align-items:center; gap:12px;">
                     <button class="btn-qty" onclick="changeRep(${i},-1)">-</button>
-                    <span class="oswald" style="font-size:18px; width:25px; text-align:center;">${r}</span>
+                    <span class="oswald" style="font-size:22px; width:30px; text-align:center;">${r}</span>
                     <button class="btn-qty" onclick="changeRep(${i},1)">+</button>
                 </div>
             </div>`).join('');
     }
 
-    function addExoPrompt() {
-        let n = prompt("Nom de l'exercice :");
-        if(n && n.trim() !== "") { 
-            config[currentSessId].push(n.trim()); 
-            localStorage.setItem('Elite_VNext_Config', JSON.stringify(config)); 
-            load(currentSessId); 
-        }
-    }
-
-    function deleteExo(i) {
-        if(confirm("Supprimer l'exercice ?")) { 
-            config[currentSessId].splice(i, 1); 
-            localStorage.setItem('Elite_VNext_Config', JSON.stringify(config)); 
-            load(currentSessId); 
-        }
-    }
-
+    function addExoPrompt() { let n = prompt("Nom de l'exercice :"); if(n && n.trim() !== "") { config[currentSessId].push(n.trim()); localStorage.setItem('Elite_VNext_Config', JSON.stringify(config)); load(currentSessId); } }
+    function deleteExo(i) { if(confirm("Supprimer l'exercice ?")) { config[currentSessId].splice(i, 1); localStorage.setItem('Elite_VNext_Config', JSON.stringify(config)); load(currentSessId); } }
     function changeRep(i, v) { currentSets[i] = Math.max(0, currentSets[i] + v); refreshSetsUI(); }
     function addNewSet() { currentSets.push(8); refreshSetsUI(); }
     function closeM() { document.getElementById('modal').style.display = 'none'; }
