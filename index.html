@@ -1,8 +1,3 @@
-
-Anaïs Nhn <anais.nouhen1709@gmail.com>
-03:44 (il y a 0 minute)
-À moi
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -14,50 +9,44 @@ Anaïs Nhn <anais.nouhen1709@gmail.com>
     <style>
         :root {
             --bg: #000000; --card: #0c0c0c; --accent: #e61e25; 
-            --gold: #d4af37; --green: #2ecc71; --text: #ffffff; --dim: #666;
+            --green: #2ecc71; --blue: #3498db; --text: #ffffff; --dim: #666;
         }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
         h1, h2, .title-font { font-family: 'Oswald', sans-serif; text-transform: uppercase; }
         
+        /* Header style Image 1000059268 */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .header-title { border-left: 4px solid var(--accent); padding-left: 12px; }
         .header-title span { color: var(--dim); font-size: 10px; letter-spacing: 2px; display: block; }
         .header-title h1 { margin: 0; font-size: 28px; letter-spacing: 1px; }
 
-        /* Dashboard de stats style Image 1000059268 */
+        /* Dashboard Stats style Image 1000059269 */
         .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #1a1a1a; border: 1px solid #1a1a1a; margin-bottom: 25px; }
         .stat-item { background: var(--card); padding: 15px; }
         .stat-label { color: var(--dim); font-size: 10px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
         .stat-value { font-family: 'Oswald', sans-serif; font-size: 20px; }
-        .stat-sub { color: var(--dim); font-size: 11px; margin-top: 4px; }
 
-        /* Navigation Séances */
+        /* Nav Séances */
         .nav-sessions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
-        .btn-nav { background: var(--card); border: 1px solid #222; color: var(--dim); padding: 15px; border-radius: 4px; cursor: pointer; font-family: 'Oswald', sans-serif; font-size: 14px; }
+        .btn-nav { background: var(--card); border: 1px solid #222; color: var(--dim); padding: 15px; border-radius: 4px; cursor: pointer; font-family: 'Oswald', sans-serif; }
         .btn-nav.active { background: #1a0505; border-color: var(--accent); color: white; }
 
-        /* Cartes Exercices */
+        /* Liste Exercices style Image 1000059268 */
         .exo-card { background: var(--card); border-bottom: 1px solid #1a1a1a; padding: 20px 10px; display: flex; justify-content: space-between; align-items: center; }
-        .exo-info { flex-grow: 1; }
-        .exo-name { font-family: 'Oswald', sans-serif; font-size: 18px; margin-bottom: 5px; }
-        .exo-meta { color: var(--dim); font-size: 12px; }
+        .exo-name { font-family: 'Oswald', sans-serif; font-size: 18px; }
+        .exo-rm-hint { color: var(--green); font-size: 12px; font-weight: bold; margin-top: 4px; }
+        .btn-plus { background: #1a1a1a; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 20px; cursor: pointer; }
 
-        .btn-add-record { background: #1a1a1a; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
-
-        /* Fenêtre Saisie (Overlay) */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; padding: 20px; box-sizing: border-box; }
-        .modal-content { max-width: 500px; margin: 0 auto; }
-        .close { color: var(--accent); font-family: 'Oswald'; cursor: pointer; float: right; font-size: 18px; }
-
+        /* Modal & Inputs */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 100; padding: 20px; }
+        .close { color: var(--accent); font-family: 'Oswald'; cursor: pointer; float: right; }
         .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 20px 0; }
-        .input-box { background: #111; border: 1px solid #222; padding: 10px; text-align: center; border-radius: 8px; }
-        .input-box label { display: block; color: var(--dim); font-size: 10px; margin-bottom: 5px; }
-        .input-box input { background: transparent; border: none; color: white; width: 100%; text-align: center; font-size: 18px; font-weight: bold; }
-
-        .btn-confirm { background: var(--accent); color: white; border: none; width: 100%; padding: 15px; font-family: 'Oswald'; font-size: 18px; border-radius: 4px; cursor: pointer; }
-
-        /* Graphique */
-        .chart-wrap { height: 200px; margin: 20px 0; background: #080808; border-radius: 10px; padding: 10px; }
+        .input-box { background: #111; border: 1px solid #222; padding: 10px; text-align: center; border-radius: 4px; }
+        .input-box label { display: block; color: var(--dim); font-size: 9px; margin-bottom: 5px; }
+        .input-box input { background: transparent; border: none; color: white; width: 100%; text-align: center; font-size: 20px; font-weight: bold; outline: none; }
+        .btn-save { background: var(--accent); color: white; border: none; width: 100%; padding: 15px; font-family: 'Oswald'; font-size: 18px; cursor: pointer; }
+        
+        .chart-wrap { height: 220px; margin: 20px 0; background: #080808; padding: 10px; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -67,30 +56,12 @@ Anaïs Nhn <anais.nouhen1709@gmail.com>
             <span>OUTIL 01</span>
             <h1>MES PERFORMANCES</h1>
         </div>
-        <div style="background: var(--accent); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold;">+</div>
+        <div style="background: var(--accent); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold;">+</div>
     </div>
 
     <div class="dashboard">
-        <div class="stat-item">
-            <div class="stat-label">PR Développé Couché</div>
-            <div class="stat-value" id="pr-dc">--</div>
-            <div class="stat-sub">1RM estimé</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-label">PR Tirage</div>
-            <div class="stat-value" id="pr-tirage">--</div>
-            <div class="stat-sub">1RM estimé</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-label">Entrées Totales</div>
-            <div class="stat-value" id="total-entries">0</div>
-            <div class="stat-sub">performances</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-label">Meilleur Progrès</div>
-            <div class="stat-value" style="color: var(--green);">+0%</div>
-            <div class="stat-sub">vs séance précédente</div>
-        </div>
+        <div class="stat-item"><div class="stat-label">Total Exercices</div><div class="stat-value" id="dash-total">0</div></div>
+        <div class="stat-item"><div class="stat-label">Dernière Séance</div><div class="stat-value" id="dash-date">--/--</div></div>
     </div>
 
     <div class="nav-sessions">
@@ -103,18 +74,18 @@ Anaïs Nhn <anais.nouhen1709@gmail.com>
     <div id="modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">FERMER ✕</span>
-            <h2 id="modal-title" style="font-size: 24px; margin-top: 40px;"></h2>
+            <h2 id="modal-title" style="font-size: 26px; letter-spacing: 1px;"></h2>
             
-            <div class="chart-wrap"><canvas id="perfChart"></canvas></div>
+            <div class="chart-wrap"><canvas id="weightChart"></canvas></div>
 
             <div class="input-grid">
-                <div class="input-box"><label>SÉRIES</label><input type="number" id="in-s" placeholder="3"></div>
-                <div class="input-box"><label>POIDS (KG)</label><input type="number" id="in-w" placeholder="80"></div>
-                <div class="input-box"><label>REPS</label><input type="number" id="in-r" placeholder="10"></div>
+                <div class="input-box"><label>SÉRIES</label><input type="number" id="in-s" placeholder="0"></div>
+                <div class="input-box"><label>POIDS (KG)</label><input type="number" id="in-w" placeholder="0"></div>
+                <div class="input-box"><label>REPS</label><input type="number" id="in-r" placeholder="0"></div>
             </div>
-            <button class="btn-confirm" onclick="savePerf()">ENREGISTRER LA SÉANCE</button>
             
-            <div id="history-list" style="margin-top: 20px; font-size: 13px;"></div>
+            <button class="btn-save" onclick="savePerf()">ENREGISTRER</button>
+            <div id="history-summary" style="margin-top: 20px;"></div>
         </div>
     </div>
 
@@ -124,27 +95,28 @@ Anaïs Nhn <anais.nouhen1709@gmail.com>
         'U2': ["Développé couché barre", "Tirage horizontal", "Tirage vertical", "Face pull", "Elevation latérale"]
     };
 
-    let logs = JSON.parse(localStorage.getItem('muscuEliteLogs')) || {};
+    let logs = JSON.parse(localStorage.getItem('fitnessElite_v4')) || {};
     let activeExo = "";
     let chartObj = null;
 
     function switchSession(id) {
         document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
+        if(event) event.target.classList.add('active');
+        
         const list = document.getElementById('exo-list');
         list.innerHTML = '';
 
         sessions[id].forEach(name => {
             const hist = logs[name] || [];
-            const last = hist.length > 0 ? hist[hist.length-1] : {weight:'--', reps:'--', sets:'--'};
+            const lastRM = hist.length > 0 ? hist[hist.length-1].rm : "--";
             const card = document.createElement('div');
             card.className = 'exo-card';
             card.innerHTML = `
-                <div class="exo-info" onclick="openModal('${name}')">
+                <div onclick="openModal('${name}')">
                     <div class="exo-name">${name}</div>
-                    <div class="exo-meta">${last.sets}x ${last.weight}kg @ ${last.reps} reps</div>
+                    <div class="exo-rm-hint">1RM ACTUEL : ${lastRM} KG</div>
                 </div>
-                <button class="btn-add-record" onclick="openModal('${name}')">+</button>
+                <button class="btn-plus" onclick="openModal('${name}')">+</button>
             `;
             list.appendChild(card);
         });
@@ -165,6 +137,77 @@ Anaïs Nhn <anais.nouhen1709@gmail.com>
         const s = document.getElementById('in-s').value;
         const w = document.getElementById('in-w').value;
         const r = document.getElementById('in-r').value;
-        if(!s || !w || !r) return alert("Remplis tout !");
+        if(!s || !w || !r) return;
 
-        const rm = parseFloat((w * (1 + r / 30)).toFixed(1));
+        const rm = Math.round(w * (1 + r / 30));
+        const entry = { 
+            date: new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'}), 
+            sets: s, weight: parseFloat(w), reps: r, rm: rm 
+        };
+
+        if(!logs[activeExo]) logs[activeExo] = [];
+        logs[activeExo].push(entry);
+        localStorage.setItem('fitnessElite_v4', JSON.stringify(logs));
+        
+        renderChart(activeExo);
+        renderHistory(activeExo);
+        switchSession(document.querySelector('.btn-nav.active').innerText.includes('1') ? 'U1' : 'U2');
+    }
+
+    function renderChart(name) {
+        const hist = logs[name] || [];
+        const ctx = document.getElementById('weightChart').getContext('2d');
+        if(chartObj) chartObj.destroy();
+        
+        chartObj = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: hist.map(l => l.date),
+                datasets: [{
+                    label: 'Poids (Kg)',
+                    data: hist.map(l => l.weight),
+                    borderColor: '#e61e25',
+                    backgroundColor: 'rgba(230, 30, 37, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#fff'
+                }]
+            },
+            options: { 
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { grid: { color: '#1a1a1a' }, ticks: { color: '#444', font: { family: 'Oswald' } } },
+                    x: { grid: { display: false }, ticks: { color: '#444' } }
+                }
+            }
+        });
+    }
+
+    function renderHistory(name) {
+        const hist = (logs[name] || []).slice(-3).reverse();
+        document.getElementById('history-summary').innerHTML = hist.map(l => `
+            <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #111; font-size:13px;">
+                <span style="color:var(--dim)">${l.date}</span>
+                <span><b>${l.sets} SÉRIES</b> @ ${l.weight}KG</span>
+                <span style="color:var(--green)">${l.rm}KG RM</span>
+            </div>
+        `).join('');
+    }
+
+    function updateDashboard() {
+        let count = 0;
+        let lastDate = "--/--";
+        for(let k in logs) {
+            count++;
+            if(logs[k].length > 0) lastDate = logs[k][logs[k].length-1].date;
+        }
+        document.getElementById('dash-total').innerText = count;
+        document.getElementById('dash-date').innerText = lastDate;
+    }
+
+    switchSession('U1');
+</script>
+</body>
+</html>
