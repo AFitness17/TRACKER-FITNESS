@@ -158,3 +158,103 @@
                 const allDone = last.sets.every(r => r >= 10);
                 statusHtml = allDone ? '<span class="status-badge badge-up">▲ PROGRESSION</span>' : '<span class="status-badge badge-stay">OBJECTIF 10 REPS</span>';
             }
+            const card = document.createElement('div');
+            card.className = 'exo-card';
+            card.onclick = () => openM(name);
+            card.innerHTML = `
+                <div>
+                    <div class="oswald" style="font-size:18px;">${name}</div>
+                    <div style="font-size:12px; color:var(--dim); margin-top:4px;">${last ? last.weight+'kg • '+last.sets.join('/') : 'Pas encore de données'}</div>
+                    ${statusHtml}
+                </div>
+                <div style="background:var(--gradient); width:35px; height:35px; border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 15px rgba(255,0,0,0.2)">+</div>
+            `;
+            list.appendChild(card);
+        });
+    }
+
+    function openM(name) {
+        currentExo = name; const h = logs[name] || [];
+        const last = h.length > 0 ? h[h.length-1] : { weight: '', sets: [8, 8, 8] };
+        currentSets = [...last.sets];
+        document.getElementById('main-weight').value = last.weight;
+        document.getElementById('modal').style.display = 'block';
+        document.getElementById('m-name').innerText = name;
+        refreshSetsUI(); renderChart(name); renderHistory(name);
+    }
+
+    function refreshSetsUI() {
+        const container = document.getElementById('sets-container');
+        container.innerHTML = currentSets.map((reps, i) => `
+            <div class="set-row">
+                <span class="oswald" style="color:var(--dim); font-size:12px;">SÉRIE ${i+1}</span>
+                <div style="display:flex; align-items:center; gap:20px;">
+                    <button class="btn-qty" onclick="changeRep(${i},-1)">-</button>
+                    <span class="oswald" style="font-size:24px; width:30px; text-align:center;">${reps}</span>
+                    <button class="btn-qty" onclick="changeRep(${i},1)">+</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function changeRep(i, v) { currentSets[i] = Math.max(0, currentSets[i] + v); refreshSetsUI(); }
+    function addNewSet() { currentSets.push(8); refreshSetsUI(); }
+    function closeM() { document.getElementById('modal').style.display = 'none'; }
+
+    function saveSession() {
+        const weight = parseFloat(document.getElementById('main-weight').value);
+        if(isNaN(weight)) return;
+        const entry = { date: new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'}), weight, sets: [...currentSets] };
+        if(!logs[currentExo]) logs[currentExo] = [];
+        logs[currentExo].push(entry);
+        localStorage.setItem('Elite_Logs_V4', JSON.stringify(logs));
+        closeM(); load(currentSessId);
+    }
+
+    function renderChart(name) {
+        const h = logs[name] || []; const ctx = document.getElementById('chart').getContext('2d');
+        if(chartObj) chartObj.destroy();
+        chartObj = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: h.map(l => l.date),
+                datasets: [{
+                    data: h.map(l => l.weight),
+                    borderColor: '#ff0000', borderWidth: 3, pointBackgroundColor: '#fff',
+                    fill: true, backgroundColor: 'rgba(255, 0, 0, 0.05)', tension: 0.4
+                }]
+            },
+            options: { 
+                maintainAspectRatio: false, plugins: { legend: { display: false } },
+                scales: { 
+                    y: { grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'#444', font:{family:'Oswald'}} },
+                    x: { ticks:{color:'#444'} }
+                }
+            }
+        });
+    }
+
+    function renderHistory(name) {
+        const h = logs[name] || [];
+        document.getElementById('history-list').innerHTML = h.map((e, i) => `
+            <div style="display:flex; justify-content:space-between; padding:15px; background:var(--glass); border-radius:12px; margin-bottom:8px; font-size:12px; border:1px solid rgba(255,255,255,0.03)">
+                <span>${e.date} • <b>${e.weight}kg</b></span>
+                <span style="color:var(--accent)" onclick="deleteEntry('${name}',${i})">SUPPRIMER</span>
+            </div>
+        `).reverse().join('');
+    }
+
+    function deleteEntry(name, i) { if(confirm("Supprimer ?")) { logs[name].splice(i, 1); localStorage.setItem('Elite_Logs_V4', JSON.stringify(logs)); renderHistory(name); renderChart(name); load(currentSessId); } }
+
+    function manageExos() {
+        const action = confirm("AJOUTER un exo ? (Non pour SUPPRIMER)");
+        if(action) { const n = prompt("Nom :"); if(n) { config[currentSessId].push(n); saveConfig(); } }
+        else { const n = prompt("Nom exact à supprimer :"); const idx = config[currentSessId].indexOf(n); if(idx>-1) { config[currentSessId].splice(idx,1); saveConfig(); } }
+    }
+    function saveConfig() { localStorage.setItem('Elite_Config_V4', JSON.stringify(config)); load(currentSessId); }
+    function exportData() { const b = new Blob([JSON.stringify({logs, config})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `backup_elite.json`; a.click(); }
+
+    load('U1');
+</script>
+</body>
+</html>
