@@ -35,25 +35,24 @@
 
         h1, h2, .oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* HEADER ALIGNÉ À GAUCHE SUR UNE LIGNE */
+        /* HEADER AVEC TITRES EMPILES */
         .header { 
-            display: flex;
-            align-items: baseline;
-            gap: 10px;
             border-left: 5px solid var(--primary); 
-            padding: 10px 15px; 
+            padding: 12px 20px; 
             margin-bottom: 35px; 
             background: linear-gradient(90deg, var(--primary-glow) 0%, transparent 100%);
             border-radius: 4px 15px 15px 4px;
         }
         .header span { 
+            display: block;
             color: var(--primary); font-weight: 900; font-size: 22px; 
             text-shadow: 0 0 15px var(--primary-glow); 
-            white-space: nowrap;
+            line-height: 1.2;
         }
         .header h1 { 
-            font-size: 14px; margin: 0; color: var(--dim); 
-            letter-spacing: 2px; font-weight: 400;
+            font-size: 16px; margin: 5px 0 0 0; color: var(--dim); 
+            letter-spacing: 3px; font-weight: 400;
+            line-height: 1.2;
         }
 
         .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 35px; }
@@ -98,7 +97,7 @@
 
     <div class="header">
         <span id="brand-name">AFITNESS TRACKER</span>
-        <h1 id="title">SESSION 1</h1>
+        <h1 id="title">UPPER 1</h1>
     </div>
 
     <div class="nav">
@@ -156,10 +155,11 @@
         if(id === 'U1') {
             root.style.setProperty('--primary', '#ff0000');
             root.style.setProperty('--primary-glow', 'rgba(255, 0, 0, 0.4)');
-            root.style.setProperty('--primary-dark', '#2a0000');
+            root.style.setProperty('--primary-dark', '#3a0000');
             root.style.setProperty('--bg-top', '#3a0000');
             document.getElementById('btnU1').className = 'nav-btn active-u1';
             document.getElementById('btnU2').className = 'nav-btn';
+            document.getElementById('title').innerText = 'UPPER 1';
         } else {
             root.style.setProperty('--primary', '#ffcc00');
             root.style.setProperty('--primary-glow', 'rgba(255, 204, 0, 0.3)');
@@ -167,9 +167,9 @@
             root.style.setProperty('--bg-top', '#332200');
             document.getElementById('btnU2').className = 'nav-btn active-u2';
             document.getElementById('btnU1').className = 'nav-btn';
+            document.getElementById('title').innerText = 'UPPER 2';
         }
 
-        document.getElementById('title').innerText = id === 'U1' ? 'UPPER 1' : 'UPPER 2';
         const list = document.getElementById('exo-list');
         list.innerHTML = '';
         
