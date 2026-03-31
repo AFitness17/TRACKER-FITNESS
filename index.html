@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ELITE TRACKER - PROGRESSION AUTO</title>
+    <title>ELITE TRACKER - ULTIME</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -11,11 +11,11 @@
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; padding-top: 30px; }
         h1, h2, .oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; }
 
-        .header { border-left: 4px solid var(--accent); padding-left: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .header { border-left: 4px solid var(--accent); padding-left: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
         .header span { color: var(--dim); font-size: 10px; letter-spacing: 2px; font-weight: bold; }
 
         .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .nav-btn { background: var(--card); border: 1px solid #1a1a1a; color: var(--dim); padding: 15px; border-radius: 4px; cursor: pointer; font-family: 'Oswald'; }
+        .nav-btn { background: var(--card); border: 1px solid #1a1a1a; color: var(--dim); padding: 15px; border-radius: 6px; cursor: pointer; font-family: 'Oswald'; }
         .nav-btn.active { border-color: var(--accent); color: white; background: #130303; }
 
         .exo-card { background: var(--card); border: 1px solid #111; padding: 18px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
@@ -27,33 +27,42 @@
         .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         
         .input-section { background: #080808; border: 1px solid #1a1a1a; padding: 15px; border-radius: 10px; }
-        .weight-input { width: 100%; background: transparent; border: none; color: white; font-size: 32px; font-family: 'Oswald'; text-align: center; border-bottom: 1px solid var(--accent); margin-bottom: 15px; outline: none; }
+        .weight-input { width: 100%; background: transparent; border: none; color: white; font-size: 32px; font-family: 'Oswald'; text-align: center; border-bottom: 1px solid var(--accent); outline: none; margin-bottom: 15px;}
         
-        .set-row { display: flex; justify-content: space-between; align-items: center; background: #111; padding: 12px; border-radius: 6px; margin-bottom: 8px; }
+        .set-row { display: flex; justify-content: space-between; align-items: center; background: #111; padding: 10px; border-radius: 6px; margin-bottom: 8px; }
         .btn-qty { background: #222; color: white; border: none; width: 35px; height: 35px; border-radius: 4px; font-size: 18px; }
 
-        .btn-save { background: var(--accent); color: white; border: none; width: 100%; padding: 18px; font-family: 'Oswald'; font-size: 18px; border-radius: 4px; font-weight: bold; margin-top: 20px; }
-        .target-hint { background: #1a0505; color: #ff9999; padding: 10px; border-radius: 6px; font-size: 12px; text-align: center; margin-bottom: 15px; border: 1px solid #3d0000; }
+        .btn-save { background: var(--accent); color: white; border: none; width: 100%; padding: 18px; font-family: 'Oswald'; font-size: 18px; border-radius: 6px; font-weight: bold; margin-top: 15px; }
+        
+        .history-item { background: #080808; padding: 10px; border-radius: 6px; margin-top: 10px; display: flex; justify-content: space-between; font-size: 12px; border: 1px solid #111; }
+        .btn-del { color: var(--accent); border: none; background: none; font-size: 10px; font-family: 'Oswald'; cursor: pointer; }
 
-        .chart-box { height: 220px; margin-top: 25px; border: 1px solid #111; padding: 5px; border-radius: 8px; }
+        .admin-zone { margin-top: 30px; border-top: 1px solid #111; padding-top: 20px; text-align: center; }
+        .btn-admin { background: none; border: 1px solid #222; color: #444; padding: 8px 15px; border-radius: 4px; font-size: 10px; font-family: 'Oswald'; cursor: pointer; }
+
+        .chart-box { height: 180px; margin-top: 20px; border: 1px solid #111; border-radius: 8px; padding: 5px; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div>
-            <span>INTELLIGENCE ARTIFICIELLE</span>
-            <h1 id="title">UPPER 1</h1>
+            <span>TRACKER PERFORM</span>
+            <h1 id="title">SESSION 1</h1>
         </div>
         <button onclick="exportData()" style="background:none; border:none; color:var(--dim); font-size:10px;">💾 BACKUP</button>
     </div>
 
     <div class="nav">
-        <button class="nav-btn active" id="btnU1" onclick="load('U1')">SESSION 1</button>
-        <button class="nav-btn" id="btnU2" onclick="load('U2')">SESSION 2</button>
+        <button class="nav-btn active" id="btnU1" onclick="load('U1')">SÉANCE 1</button>
+        <button class="nav-btn" id="btnU2" onclick="load('U2')">SÉANCE 2</button>
     </div>
 
     <div id="exo-list"></div>
+
+    <div class="admin-zone">
+        <button class="btn-admin" onclick="manageExos()">+ / - MODIFIER LES EXERCICES</button>
+    </div>
 
     <div id="modal" class="modal">
         <div class="modal-head">
@@ -61,32 +70,37 @@
             <span onclick="closeM()" style="color:var(--accent); cursor:pointer; font-weight:bold;">✕ FERMER</span>
         </div>
 
-        <div id="target-message" class="target-hint"></div>
-
         <div class="input-section">
-            <label style="color:var(--dim); font-size:10px; display:block; text-align:center;">CHARGE ACTUELLE (KG)</label>
-            <input type="number" id="main-weight" class="weight-input" inputmode="decimal">
-            
+            <input type="number" id="main-weight" class="weight-input" inputmode="decimal" placeholder="0 KG">
             <div id="sets-container"></div>
             <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #333; color:#555; padding:8px; margin-top:10px; border-radius:4px; font-size:11px;">+ AJOUTER SÉRIE</button>
         </div>
 
         <button class="btn-save" onclick="saveSession()">VALIDER LA SÉANCE</button>
+        
         <div class="chart-box"><canvas id="chart"></canvas></div>
+
+        <div id="exo-history" style="margin-top: 25px;">
+            <div style="font-family:'Oswald'; color:var(--dim); font-size:12px; margin-bottom:10px;">HISTORIQUE (SUPPRIMER EN CAS D'ERREUR)</div>
+            <div id="history-list"></div>
+        </div>
     </div>
 
 <script>
-    const config = {
+    // Config initiale si vide
+    let config = JSON.parse(localStorage.getItem('Elite_Config_V3')) || {
         'U1': ["Développé couché", "Tirage vertical prise serré", "Tirage horizontal", "Elevations latérales", "Curl marteau"],
         'U2': ["Développé couché barre", "Tirage horizontal", "Tirage vertical", "Face pull", "Elevation latérale"]
     };
 
-    let logs = JSON.parse(localStorage.getItem('Elite_Auto_V2')) || {};
+    let logs = JSON.parse(localStorage.getItem('Elite_Logs_V3')) || {};
     let currentExo = "";
     let currentSets = [];
+    let currentSessId = 'U1';
     let chartObj = null;
 
     function load(id) {
+        currentSessId = id;
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn'+id).classList.add('active');
         document.getElementById('title').innerText = id === 'U1' ? 'UPPER 1' : 'UPPER 2';
@@ -94,29 +108,23 @@
         const list = document.getElementById('exo-list');
         list.innerHTML = '';
 
-        config[id].forEach(name => {
+        config[id].forEach((name, index) => {
             const h = logs[name] || [];
             const last = h.length > 0 ? h[h.length-1] : null;
-            
-            // Logique de Surcharge
             let statusHtml = '<span class="status-badge badge-stay">EN ATTENTE</span>';
             if(last) {
                 const allDone = last.sets.every(r => r >= 10);
-                statusHtml = allDone 
-                    ? '<span class="status-badge badge-up">▲ AUGMENTER POIDS</span>' 
-                    : '<span class="status-badge badge-stay">VISER 10 REPS PARTOUT</span>';
+                statusHtml = allDone ? '<span class="status-badge badge-up">▲ AUGMENTER POIDS</span>' : '<span class="status-badge badge-stay">VISER 10 REPS PARTOUT</span>';
             }
 
             const card = document.createElement('div');
             card.className = 'exo-card';
-            card.onclick = () => openM(name);
             card.innerHTML = `
-                <div>
+                <div onclick="openM('${name}')" style="flex-grow:1">
                     <div class="exo-name oswald">${name}</div>
                     <div style="font-size:11px; color:var(--dim)">${last ? last.weight+'kg | '+last.sets.join('/') : 'Première séance'}</div>
                     ${statusHtml}
                 </div>
-                <div style="color:var(--accent); font-size:20px;">➔</div>
             `;
             list.appendChild(card);
         });
@@ -126,61 +134,90 @@
         currentExo = name;
         const h = logs[name] || [];
         const last = h.length > 0 ? h[h.length-1] : { weight: 0, sets: [8, 8, 8] };
-        
         currentSets = [...last.sets];
-        document.getElementById('main-weight').value = last.weight;
+        document.getElementById('main-weight').value = last.weight || '';
         document.getElementById('modal').style.display = 'block';
         document.getElementById('m-name').innerText = name;
-        
-        const allDone = last.sets.every(r => r >= 10);
-        document.getElementById('target-message').innerHTML = allDone 
-            ? "💪 <b>BRAVO !</b> Tu as validé 10 reps partout. <br>Augmente de 2.5kg aujourd'hui."
-            : `🎯 <b>OBJECTIF :</b> Valide 10 reps sur tes ${currentSets.length} séries avant de monter le poids.`;
-
         refreshSetsUI();
         renderChart(name);
+        renderHistoryList(name);
+    }
+
+    function renderHistoryList(name) {
+        const h = logs[name] || [];
+        const container = document.getElementById('history-list');
+        container.innerHTML = h.map((entry, index) => `
+            <div class="history-item">
+                <span>${entry.date} - ${entry.weight}kg (${entry.sets.join('/')})</span>
+                <button class="btn-del" onclick="deleteEntry('${name}', ${index})">SUPPRIMER</button>
+            </div>
+        `).reverse().join('');
+    }
+
+    function deleteEntry(name, index) {
+        if(confirm("Supprimer cette donnée ?")) {
+            logs[name].splice(index, 1);
+            localStorage.setItem('Elite_Logs_V3', JSON.stringify(logs));
+            renderHistoryList(name);
+            renderChart(name);
+            load(currentSessId);
+        }
+    }
+
+    function manageExos() {
+        const action = confirm("Voulez-vous AJOUTER un exercice ? (Annuler pour SUPPRIMER)");
+        if(action) {
+            const newExo = prompt("Nom du nouvel exercice :");
+            if(newExo) {
+                config[currentSessId].push(newExo);
+                saveConfig();
+            }
+        } else {
+            const nameToDel = prompt("Nom exact de l'exercice à supprimer de cette séance :");
+            const idx = config[currentSessId].indexOf(nameToDel);
+            if(idx > -1) {
+                config[currentSessId].splice(idx, 1);
+                saveConfig();
+            }
+        }
+    }
+
+    function saveConfig() {
+        localStorage.setItem('Elite_Config_V3', JSON.stringify(config));
+        load(currentSessId);
     }
 
     function refreshSetsUI() {
         const container = document.getElementById('sets-container');
-        container.innerHTML = '';
-        currentSets.forEach((reps, i) => {
-            const row = document.createElement('div');
-            row.className = 'set-row';
-            row.innerHTML = `
+        container.innerHTML = currentSets.map((reps, i) => `
+            <div class="set-row">
                 <span class="oswald" style="color:var(--dim); font-size:12px;">SÉRIE ${i+1}</span>
                 <div style="display:flex; align-items:center; gap:15px;">
                     <button class="btn-qty" onclick="changeRep(${i},-1)">-</button>
                     <span class="oswald" style="font-size:20px; width:25px; text-align:center;">${reps}</span>
                     <button class="btn-qty" onclick="changeRep(${i},1)">+</button>
                 </div>
-            `;
-            container.appendChild(row);
-        });
+            </div>
+        `).join('');
     }
 
-    function changeRep(i, v) {
-        currentSets[i] = Math.max(0, currentSets[i] + v);
-        refreshSetsUI();
-    }
-
+    function changeRep(i, v) { currentSets[i] = Math.max(0, currentSets[i] + v); refreshSetsUI(); }
     function addNewSet() { currentSets.push(8); refreshSetsUI(); }
     function closeM() { document.getElementById('modal').style.display = 'none'; }
 
     function saveSession() {
         const weight = parseFloat(document.getElementById('main-weight').value);
-        if(!weight) return;
+        if(isNaN(weight)) return;
         const entry = {
             date: new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'}),
             weight: weight,
-            sets: [...currentSets],
-            avgReps: (currentSets.reduce((a,b)=>a+b,0) / currentSets.length).toFixed(1)
+            sets: [...currentSets]
         };
         if(!logs[currentExo]) logs[currentExo] = [];
         logs[currentExo].push(entry);
-        localStorage.setItem('Elite_Auto_V2', JSON.stringify(logs));
+        localStorage.setItem('Elite_Logs_V3', JSON.stringify(logs));
         closeM();
-        load(document.getElementById('btnU1').classList.contains('active') ? 'U1' : 'U2');
+        load(currentSessId);
     }
 
     function renderChart(name) {
@@ -191,42 +228,24 @@
             type: 'line',
             data: {
                 labels: h.map(l => l.date),
-                datasets: [
-                    {
-                        label: 'Poids (kg)',
-                        data: h.map(l => l.weight),
-                        borderColor: '#e61e25',
-                        backgroundColor: 'rgba(230, 30, 37, 0.1)',
-                        yAxisID: 'y',
-                        fill: true,
-                        tension: 0.3
-                    },
-                    {
-                        label: 'Reps (Moy)',
-                        data: h.map(l => l.avgReps),
-                        borderColor: '#555',
-                        borderDash: [5, 5],
-                        yAxisID: 'y1',
-                        tension: 0.3
-                    }
-                ]
+                datasets: [{
+                    data: h.map(l => l.weight),
+                    borderColor: '#e61e25',
+                    backgroundColor: 'rgba(230, 30, 37, 0.1)',
+                    fill: true, tension: 0.3, pointRadius: 3
+                }]
             },
-            options: { 
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { 
-                    y: { position:'left', grid:{color:'#111'}, ticks:{color:'#e61e25', font:{family:'Oswald'}} },
-                    y1: { position:'right', grid:{display:false}, ticks:{color:'#555'} }
-                }
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } },
+                scales: { y: { grid:{color:'#111'}, ticks:{color:'#444'} }, x: { ticks:{color:'#444'} } }
             }
         });
     }
 
     function exportData() {
-        const blob = new Blob([JSON.stringify(logs)], {type:'application/json'});
+        const blob = new Blob([JSON.stringify({logs, config})], {type:'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `elite_backup_${new Date().toLocaleDateString()}.json`;
+        a.download = `elite_total_backup.json`;
         a.click();
     }
 
