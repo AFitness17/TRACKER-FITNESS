@@ -50,7 +50,7 @@
         .badge-up { background: rgba(0, 255, 136, 0.1); color: var(--green); border: 1px solid var(--green); }
         .badge-stay { background: rgba(255, 255, 255, 0.05); color: var(--dim); border: 1px solid #333; }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 1000; padding: 25px; overflow-y: auto; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; padding: 25px; overflow-y: auto; }
         
         .record-banner { 
             background: rgba(255,255,255,0.03); border: 1px solid #222; border-left: 4px solid var(--accent);
@@ -73,6 +73,7 @@
             background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; margin-bottom: 10px;
         }
         .btn-qty { background: #1a1a1a; color: white; border: 1px solid #333; width: 45px; height: 45px; border-radius: 12px; font-size: 20px; }
+        .btn-del-set { color: var(--red); background: none; border: none; font-size: 18px; margin-left: 10px; cursor: pointer; }
         
         .btn-save { 
             background: var(--gradient); color: white; border: none; width: 100%; padding: 20px; 
@@ -81,6 +82,9 @@
 
         .chart-box { height: 280px; margin-top: 30px; border-radius: 16px; background: rgba(0,0,0,0.3); padding: 15px; border: 1px solid #111; }
         .history-row { display: flex; justify-content: space-between; padding: 15px; background: var(--glass); border-radius: 12px; margin-bottom: 8px; font-size: 13px; border: 1px solid rgba(255,255,255,0.03); }
+        
+        .admin-controls { text-align: center; margin: 30px 0; }
+        .btn-admin { background: rgba(255,255,255,0.05); border: 1px solid #333; color: var(--dim); padding: 10px 20px; border-radius: 8px; font-family: 'Oswald'; font-size: 11px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -99,9 +103,16 @@
 
     <div id="exo-list"></div>
 
+    <div class="admin-controls">
+        <button class="btn-admin" onclick="addExo()">+ AJOUTER UN EXERCICE</button>
+    </div>
+
     <div id="modal" class="modal">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-            <h2 id="m-name" style="margin:0; font-size:24px;"></h2>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <h2 id="m-name" style="margin:0; font-size:24px;"></h2>
+                <span onclick="renameExo()" style="color:var(--dim); font-size:12px; text-decoration:underline; cursor:pointer;">Modifier</span>
+            </div>
             <span onclick="closeM()" style="background:#1a1a1a; padding:10px 15px; border-radius:12px; color:var(--accent); font-weight:bold; cursor:pointer;">✕</span>
         </div>
 
@@ -122,6 +133,10 @@
         <div class="chart-box"><canvas id="chart"></canvas></div>
 
         <div id="history-list" style="margin-top:30px;"></div>
+
+        <div style="text-align:center; margin-top:30px; margin-bottom:30px;">
+            <button class="btn-admin" style="color:var(--red); border-color:rgba(255,0,0,0.2);" onclick="deleteExo()">SUPPRIMER L'EXERCICE</button>
+        </div>
     </div>
 
 <script>
@@ -184,10 +199,11 @@
         container.innerHTML = currentSets.map((reps, i) => `
             <div class="set-row">
                 <span class="oswald" style="color:var(--dim); font-size:12px;">SÉRIE ${i+1}</span>
-                <div style="display:flex; align-items:center; gap:20px;">
+                <div style="display:flex; align-items:center;">
                     <button class="btn-qty" onclick="changeRep(${i},-1)">-</button>
-                    <span class="oswald" style="font-size:24px; width:30px; text-align:center;">${reps}</span>
+                    <span class="oswald" style="font-size:24px; width:40px; text-align:center;">${reps}</span>
                     <button class="btn-qty" onclick="changeRep(${i},1)">+</button>
+                    <button class="btn-del-set" onclick="removeSet(${i})">✕</button>
                 </div>
             </div>
         `).join('');
@@ -195,7 +211,42 @@
 
     function changeRep(i, v) { currentSets[i] = Math.max(0, currentSets[i] + v); refreshSetsUI(); }
     function addNewSet() { currentSets.push(8); refreshSetsUI(); }
+    function removeSet(i) { currentSets.splice(i, 1); refreshSetsUI(); }
     function closeM() { document.getElementById('modal').style.display = 'none'; }
+
+    function addExo() {
+        const n = prompt("Nom du nouvel exercice :");
+        if(n) { config[currentSessId].push(n); saveConfig(); load(currentSessId); }
+    }
+
+    function renameExo() {
+        const n = prompt("Nouveau nom pour cet exercice :", currentExo);
+        if(n && n !== currentExo) {
+            const idx = config[currentSessId].indexOf(currentExo);
+            config[currentSessId][idx] = n;
+            logs[n] = logs[currentExo];
+            delete logs[currentExo];
+            currentExo = n;
+            saveConfig();
+            document.getElementById('m-name').innerText = n;
+            load(currentSessId);
+        }
+    }
+
+    function deleteExo() {
+        if(confirm("Supprimer l'exercice et toutes ses données ?")) {
+            config[currentSessId] = config[currentSessId].filter(e => e !== currentExo);
+            delete logs[currentExo];
+            saveConfig();
+            closeM();
+            load(currentSessId);
+        }
+    }
+
+    function saveConfig() {
+        localStorage.setItem('Elite_VNext_Config', JSON.stringify(config));
+        localStorage.setItem('Elite_VNext_Logs', JSON.stringify(logs));
+    }
 
     function saveSession() {
         const weight = parseFloat(document.getElementById('main-weight').value);
@@ -207,13 +258,14 @@
         };
         if(!logs[currentExo]) logs[currentExo] = [];
         logs[currentExo].push(entry);
-        localStorage.setItem('Elite_VNext_Logs', JSON.stringify(logs));
+        saveConfig();
         closeM(); load(currentSessId);
     }
 
     function renderChart(name) {
         const h = logs[name] || []; const ctx = document.getElementById('chart').getContext('2d');
         if(chartObj) chartObj.destroy();
+        if(h.length === 0) return;
 
         const wCol = h.map((e, i) => i === 0 ? '#fff' : (e.weight > h[i-1].weight ? '#00ff88' : e.weight < h[i-1].weight ? '#ff3b3b' : '#fff'));
         const rCol = h.map((e, i) => i === 0 ? '#fff' : (e.avgReps > h[i-1].avgReps ? '#ff00ff' : e.avgReps < h[i-1].avgReps ? '#ff9500' : '#fff'));
@@ -257,7 +309,8 @@
         `).reverse().join('');
     }
 
-    function deleteEntry(name, i) { if(confirm("Supprimer ?")) { logs[name].splice(i, 1); localStorage.setItem('Elite_VNext_Logs', JSON.stringify(logs)); renderHistory(name); renderChart(name); load(currentSessId); } }
+    function deleteEntry(name, i) { if(confirm("Supprimer cette entrée ?")) { logs[name].splice(i, 1); saveConfig(); renderHistory(name); renderChart(name); load(currentSessId); } }
+    
     load('U1');
 </script>
 </body>
