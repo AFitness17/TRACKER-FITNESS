@@ -3,211 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracker Pro Muscu</title>
+    <title>Elite Performance Plan</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg: #050505;
-            --card: #121212;
-            --accent-rm: #2ecc71; /* Vert pour le RM */
-            --accent-poids: #3498db; /* Bleu pour le poids réel */
-            --red: #e74c3c;
-            --text: #ffffff;
-            --text-dim: #666;
+            --bg: #050505; --card: #0f0f0f; --accent: #e74c3c; 
+            --green: #2ecc71; --blue: #3498db; --text: #ffffff; --text-dim: #888;
         }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
         .container { max-width: 500px; margin: 0 auto; }
-        .header-tag { color: var(--red); font-size: 10px; font-weight: bold; letter-spacing: 2px; }
-        h1 { font-size: 22px; text-transform: uppercase; margin-bottom: 20px; }
-
-        /* Onglets */
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: var(--text-dim); border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .tab-btn.active { border-color: var(--red); color: white; background: rgba(231, 76, 60, 0.1); }
-
-        /* Carte Exercice */
-        .exo-card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #222; }
-        .exo-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .exo-name { font-weight: bold; text-transform: uppercase; font-size: 1.1em; }
-        .rm-val { color: var(--accent-rm); font-weight: bold; text-align: right; font-size: 0.9em; }
-
-        /* Saisie */
-        .input-row { display: grid; grid-template-columns: 1fr 1fr 50px; gap: 10px; }
-        input { background: #1a1a1a; border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; }
-        .btn-add { background: var(--red); border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
-        /* Stats & Graphique */
-        .stats-box { margin-top: 15px; border-top: 1px solid #222; padding-top: 15px; }
-        .chart-container { height: 200px; margin-bottom: 15px; }
         
-        /* Historique */
-        .hist-btn { width: 100%; background: none; border: 1px solid #333; color: var(--text-dim); padding: 8px; border-radius: 6px; font-size: 0.8em; cursor: pointer; }
-        .hist-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85em; display: none; }
-        .hist-table th { text-align: left; color: var(--text-dim); padding: 5px; }
-        .hist-table td { padding: 8px 5px; border-top: 1px solid #1a1a1a; }
-        .hist-table.active { display: table; }
+        .header { margin-bottom: 30px; border-left: 3px solid var(--accent); padding-left: 15px; }
+        .header span { color: var(--accent); font-size: 10px; font-weight: 800; letter-spacing: 2px; }
+        h1 { margin: 5px 0; font-size: 26px; text-transform: uppercase; letter-spacing: -1px; }
 
-        /* Ajout manuel */
-        .custom-add { border: 2px dashed #222; padding: 15px; border-radius: 12px; margin-top: 30px; text-align: center; }
-        .btn-create { background: var(--accent-rm); border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; margin-top: 10px; }
+        /* Sélection de Séance */
+        .session-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px; }
+        .btn-session { background: var(--card); border: 1px solid #222; color: var(--text-dim); padding: 20px 10px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-session.active { border-color: var(--accent); color: white; background: rgba(231, 76, 60, 0.05); }
+
+        /* Liste Exercices */
+        .exo-card { background: var(--card); border: 1px solid #1a1a1a; border-radius: 16px; padding: 20px; margin-bottom: 15px; position: relative; overflow: hidden; }
+        .exo-title { font-size: 1.1em; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+        .exo-title::after { content: '📊'; font-size: 0.8em; opacity: 0.5; }
+        
+        .input-group { display: flex; gap: 10px; background: #151515; padding: 5px; border-radius: 10px; }
+        input { background: transparent; border: none; color: white; padding: 12px; width: 100%; text-align: center; font-weight: bold; }
+        input::placeholder { color: #444; font-weight: normal; }
+        .btn-plus { background: var(--accent); border: none; color: white; padding: 0 20px; border-radius: 8px; font-weight: 900; cursor: pointer; }
+
+        /* Modal Graphique */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+        .modal-content { max-width: 500px; margin: 0 auto; }
+        .close-btn { color: var(--accent); font-weight: bold; margin-bottom: 20px; display: block; text-align: right; cursor: pointer; }
+        
+        .chart-wrap { height: 250px; background: #111; border-radius: 15px; padding: 15px; margin-bottom: 20px; }
+        .hist-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+        .hist-table td { padding: 12px 5px; border-bottom: 1px solid #1a1a1a; }
+        .del-x { color: var(--accent); background: none; border: none; font-size: 1.2em; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-tag">MODULE 06 - PERFORMANCES</div>
-    <h1>MON TRACKER PRO</h1>
-
-    <div class="tabs">
-        <button class="tab-btn active" id="btnHaut" onclick="setCat('Haut')">HAUT DU CORPS</button>
-        <button class="tab-btn" id="btnBas" onclick="setCat('Bas')">BAS DU CORPS</button>
+    <div class="header">
+        <span>WORKOUT PLANNER</span>
+        <h1>Mes Séances</h1>
     </div>
 
-    <div id="liste-exos"></div>
+    <div class="session-selector">
+        <button class="btn-session" id="btnU1" onclick="loadSession('U1')">UPPER 1</button>
+        <button class="btn-session" id="btnU2" onclick="loadSession('U2')">UPPER 2</button>
+    </div>
 
-    <div class="custom-add">
-        <div style="font-weight:bold; font-size: 0.8em; margin-bottom:10px;">AJOUTER UN EXERCICE</div>
-        <input type="text" id="newName" placeholder="Nom de l'exercice...">
-        <select id="newCat" style="width:100%; margin-top:10px; padding:10px; background:#1a1a1a; color:white; border:1px solid #333; border-radius:8px;">
-            <option value="Haut">Haut du corps</option>
-            <option value="Bas">Bas du corps</option>
-        </select>
-        <button class="btn-create" onclick="addCustom()">CRÉER L'EXERCICE</button>
+    <div id="exo-list"></div>
+</div>
+
+<div id="statsModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeStats()">FERMER ✕</span>
+        <h2 id="modalTitle" style="text-transform: uppercase;"></h2>
+        <div class="chart-wrap"><canvas id="modalChart"></canvas></div>
+        <div id="modalHistory"></div>
     </div>
 </div>
 
 <script>
-    // Liste des exercices par défaut
-    const baseExos = [
-        {name: "Développé couché", cat: "Haut"}, {name: "Développé incliné", cat: "Haut"},
-        {name: "Dips", cat: "Haut"}, {name: "Tractions", cat: "Haut"},
-        {name: "Squat", cat: "Bas"}, {name: "Soulevé de terre", cat: "Bas"},
-        {name: "Presse à cuisses", cat: "Bas"}
-    ];
+    const sessions = {
+        'U1': ["Développé couché", "Tirage vertical prise serré", "Tirage horizontal", "Elevations latérales", "Curl marteau"],
+        'U2': ["Développé couché barre", "Tirage horizontal", "Tirage vertical", "Face pull", "Elevation latérale"]
+    };
 
-    let userExos = JSON.parse(localStorage.getItem('userExos')) || baseExos;
-    let data = JSON.parse(localStorage.getItem('muscuData')) || {};
-    let activeCat = 'Haut';
+    let logs = JSON.parse(localStorage.getItem('muscuLogs')) || {};
+    let activeChart = null;
 
-    function setCat(c) {
-        activeCat = c;
-        document.getElementById('btnHaut').classList.toggle('active', c === 'Haut');
-        document.getElementById('btnBas').classList.toggle('active', c === 'Bas');
-        render();
+    function loadSession(id) {
+        document.querySelectorAll('.btn-session').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn'+id).classList.add('active');
+        
+        const list = document.getElementById('exo-list');
+        list.innerHTML = '';
+
+        sessions[id].forEach(name => {
+            const card = document.createElement('div');
+            card.className = 'exo-card';
+            card.innerHTML = `
+                <div class="exo-title" onclick="openStats('${name}')">${name}</div>
+                <div class="input-group">
+                    <input type="number" id="w-${name}" placeholder="Poids (kg)">
+                    <input type="number" id="r-${name}" placeholder="Reps">
+                    <button class="btn-plus" onclick="addEntry('${name}')">+</button>
+                </div>
+            `;
+            list.appendChild(card);
+        });
     }
 
     function addEntry(name) {
         const w = parseFloat(document.getElementById(`w-${name}`).value);
         const r = parseInt(document.getElementById(`r-${name}`).value);
-        if(!w || !r) return alert("Remplis le poids et les reps !");
-
+        if(!w || !r) return;
+        
         const rm = parseFloat((w * (1 + r / 30)).toFixed(1));
-        const entry = {
-            date: new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'}),
-            poids: w,
-            reps: r,
-            rm: rm
-        };
-
-        if(!data[name]) data[name] = [];
-        data[name].push(entry);
-        localStorage.setItem('muscuData', JSON.stringify(data));
-        render();
+        const entry = { id: Date.now(), date: new Date().toLocaleDateString('fr-FR'), weight: w, reps: r, rm: rm };
+        
+        if(!logs[name]) logs[name] = [];
+        logs[name].push(entry);
+        localStorage.setItem('muscuLogs', JSON.stringify(logs));
+        
+        document.getElementById(`w-${name}`).value = '';
+        document.getElementById(`r-${name}`).value = '';
+        alert("Enregistré !");
     }
 
-    function addCustom() {
-        const n = document.getElementById('newName').value;
-        const c = document.getElementById('newCat').value;
-        if(n) {
-            userExos.push({name: n, cat: c});
-            localStorage.setItem('userExos', JSON.stringify(userExos));
-            document.getElementById('newName').value = '';
-            render();
+    function openStats(name) {
+        document.getElementById('statsModal').style.display = 'block';
+        document.getElementById('modalTitle').innerText = name;
+        const hist = logs[name] || [];
+        
+        // Rendu Historique
+        const histDiv = document.getElementById('modalHistory');
+        if(hist.length === 0) {
+            histDiv.innerHTML = "<p style='color:#444; text-align:center;'>Aucune donnée</p>";
+        } else {
+            histDiv.innerHTML = `<table class="hist-table">` + 
+                hist.slice().reverse().map(l => `
+                <tr>
+                    <td>${l.date}</td>
+                    <td><b>${l.weight}kg</b> x ${l.reps}</td>
+                    <td style="color:var(--green)">${l.rm}kg (max)</td>
+                    <td><button class="del-x" onclick="deleteEntry('${name}', ${l.id})">×</button></td>
+                </tr>`).join('') + `</table>`;
         }
-    }
 
-    function toggleHist(name) {
-        document.getElementById(`hist-${name}`).classList.toggle('active');
-    }
-
-    function render() {
-        const list = document.getElementById('liste-exos');
-        list.innerHTML = '';
-
-        userExos.filter(e => e.cat === activeCat).forEach(exo => {
-            const hist = data[exo.name] || [];
-            const lastRM = hist.length > 0 ? hist[hist.length-1].rm : '--';
-
-            const card = document.createElement('div');
-            card.className = 'exo-card';
-            card.innerHTML = `
-                <div class="exo-info">
-                    <div class="exo-name">${exo.name}</div>
-                    <div class="rm-val">MAX ESTIMÉ (1RM)<br><span style="font-size:1.4em">${lastRM} kg</span></div>
-                </div>
-                <div class="input-row">
-                    <input type="number" id="w-${exo.name}" placeholder="Kg">
-                    <input type="number" id="r-${exo.name}" placeholder="Reps">
-                    <button class="btn-add" onclick="addEntry('${exo.name}')">+</button>
-                </div>
-                ${hist.length > 0 ? `
-                    <div class="stats-box">
-                        <div class="chart-container"><canvas id="chart-${exo.name}"></canvas></div>
-                        <button class="hist-btn" onclick="toggleHist('${exo.name}')">Voir l'historique complet</button>
-                        <table class="hist-table" id="hist-${exo.name}">
-                            <thead><tr><th>DATE</th><th>TRAVAIL</th><th>1RM</th></tr></thead>
-                            <tbody>
-                                ${hist.slice().reverse().map(h => `
-                                    <tr>
-                                        <td>${h.date}</td>
-                                        <td>${h.poids}kg x ${h.reps}</td>
-                                        <td style="color:var(--accent-rm); font-weight:bold;">${h.rm}kg</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                ` : ''}
-            `;
-            list.appendChild(card);
-
-            if (hist.length > 0) {
-                new Chart(document.getElementById(`chart-${exo.name}`), {
-                    type: 'line',
-                    data: {
-                        labels: hist.map(h => h.date),
-                        datasets: [
-                            {
-                                label: 'RM Estimé',
-                                data: hist.map(h => h.rm),
-                                borderColor: '#2ecc71',
-                                tension: 0.3,
-                                pointRadius: 3
-                            },
-                            {
-                                label: 'Poids Réel',
-                                data: hist.map(h => h.poids),
-                                borderColor: '#3498db',
-                                borderDash: [5, 5],
-                                tension: 0.3,
-                                pointRadius: 3
-                            }
-                        ]
-                    },
-                    options: {
-                        maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#777', size: 10 }, position: 'top' } },
-                        scales: { 
-                            y: { grid: { color: '#222' }, ticks: { color: '#555' } },
-                            x: { grid: { display: false }, ticks: { color: '#555' } }
-                        }
-                    }
-                });
+        // Rendu Chart
+        if(activeChart) activeChart.destroy();
+        const ctx = document.getElementById('modalChart').getContext('2d');
+        activeChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: hist.map(l => l.date),
+                datasets: [
+                    { label: '1RM Estimé', data: hist.map(l => l.rm), borderColor: '#2ecc71', tension: 0.3, pointRadius: 4 },
+                    { label: 'Poids Réel', data: hist.map(l => l.weight), borderColor: '#3498db', borderDash: [5, 5], tension: 0.3, pointRadius: 2 }
+                ]
+            },
+            options: { 
+                maintainAspectRatio: false, 
+                plugins: { legend: { labels: { color: '#888', size: 10 } } },
+                scales: { 
+                    y: { grid: { color: '#222' }, ticks: { color: '#555' } },
+                    x: { ticks: { color: '#555' } } 
+                }
             }
         });
     }
-    render();
-</script>
 
+    function deleteEntry(name, id) {
+        if(confirm("Supprimer ?")) {
+            logs[name] = logs[name].filter(l => l.id !== id);
+            localStorage.setItem('muscuLogs', JSON.stringify(logs));
+            openStats(name);
+        }
+    }
+
+    function closeStats() { document.getElementById('statsModal').style.display = 'none'; }
+    
+    // Charger Upper 1 par défaut
+    loadSession('U1');
+</script>
 </body>
 </html>
