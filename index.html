@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AFITNESS TRACKER - ULTRA SMOOTH</title>
+    <title>AFITNESS TRACKER - ELITE</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -17,15 +17,11 @@
             --card: rgba(18, 18, 18, 0.8); 
             --text: #ffffff; 
             --dim: #888; 
+            --success: #00ff88;
             --inner-glow: inset 0 1px 2px rgba(255,255,255,0.1);
         }
 
-        /* CORRECTION : Suppression du contour bleu au clic sur mobile */
-        * {
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
-            box-sizing: border-box;
-        }
+        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
 
         body {
             font-family: 'Montserrat', sans-serif; 
@@ -33,7 +29,6 @@
             background-attachment: fixed;
             color: var(--text);
             margin: 0; padding: 20px; padding-top: 40px;
-            /* Optimisation de la fluidité */
             transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
@@ -41,35 +36,27 @@
 
         h1, h2, .oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* HEADER */
         .header { 
             border-left: 6px solid var(--primary); 
-            padding: 12px 20px; 
-            margin-bottom: 40px; 
+            padding: 12px 20px; margin-bottom: 40px; 
             background: linear-gradient(90deg, var(--primary-glow) 0%, transparent 100%);
             border-radius: 4px 15px 15px 4px;
             box-shadow: -15px 0 30px rgba(0,0,0,0.5);
             transition: all 0.4s ease;
-            transform: translate3d(0,0,0); /* Accélération GPU */
+            transform: translate3d(0,0,0);
         }
         .header span { 
-            color: var(--primary); 
-            font-weight: 900; 
-            font-size: 26px; 
-            letter-spacing: -1px;
-            text-shadow: 0 0 15px var(--primary-glow);
+            color: var(--primary); font-weight: 900; font-size: 26px; 
+            letter-spacing: -1px; text-shadow: 0 0 15px var(--primary-glow);
         }
         .header h1 { font-size: 13px; margin: 5px 0 0 0; color: var(--dim); letter-spacing: 4px; }
 
-        /* NAVIGATION */
         .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 35px; }
         .nav-btn {
             border-radius: 14px; cursor: pointer; font-family: 'Oswald'; font-size: 13px; padding: 20px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-transform: uppercase;
-            border: 1px solid rgba(255,255,255,0.05);
-            background: #0f0f0f;
-            color: var(--dim);
+            text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05);
+            background: #0f0f0f; color: var(--dim);
             box-shadow: 0 10px 20px rgba(0,0,0,0.4), var(--inner-glow);
             transform: translate3d(0,0,0);
         }
@@ -88,38 +75,41 @@
             transform: translate3d(0, -4px, 0) scale(1.02);
         }
 
-        /* CARDS */
         .exo-card {
-            background: var(--card); 
-            border: 1px solid rgba(255,255,255,0.04);
+            background: var(--card); border: 1px solid rgba(255,255,255,0.04);
             padding: 25px; border-radius: 24px; margin-bottom: 20px;
             display: flex; justify-content: space-between; align-items: center;
-            backdrop-filter: blur(10px); /* Réduit pour plus de fluidité mobile */
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.05);
-            transition: transform 0.2s ease;
-            transform: translate3d(0,0,0);
+            transition: transform 0.2s ease; transform: translate3d(0,0,0);
         }
         .exo-card:active { transform: scale(0.96) translate3d(0,0,0); }
 
-        .add-btn-icon {
-            width: 48px; height: 48px; border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--primary);
-            color: white; font-weight: bold; font-size: 22px;
-            box-shadow: 0 10px 20px var(--primary-glow);
-            transition: background 0.4s ease;
-        }
-
         .status-badge { 
             font-size: 9px; padding: 6px 14px; border-radius: 30px; font-weight: 800; 
-            margin-top: 10px; display: inline-block;
-            border: 1px solid var(--primary); color: var(--primary);
+            margin-top: 10px; display: inline-flex; align-items: center; gap: 6px;
+            border: 1px solid rgba(255,255,255,0.1); color: var(--dim);
             background: rgba(255,255,255,0.02);
             transition: all 0.4s ease;
         }
 
-        /* MODALE */
+        /* NOUVEAU STYLE : BADGE SUCCÈS VERT */
+        .badge-success {
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+            background: rgba(0, 255, 136, 0.05) !important;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.1);
+        }
+
+        .add-btn-icon {
+            width: 48px; height: 48px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--primary); color: white; font-weight: bold; font-size: 22px;
+            box-shadow: 0 10px 20px var(--primary-glow);
+            transition: background 0.4s ease;
+        }
+
         .modal { 
             display: none; position: fixed; inset: 0; 
             background: radial-gradient(circle at center, var(--primary-dark) 0%, #050505 100%); 
@@ -130,9 +120,7 @@
         .btn-save {
             background: var(--primary); color: white; border: none; width: 100%; padding: 24px;
             font-family: 'Oswald'; font-size: 18px; border-radius: 20px; font-weight: bold; margin-top: 30px;
-            box-shadow: 0 15px 40px var(--primary-glow);
-            text-transform: uppercase; letter-spacing: 2px;
-            transition: all 0.4s ease;
+            box-shadow: 0 15px 40px var(--primary-glow); text-transform: uppercase; letter-spacing: 2px;
         }
 
         .btn-qty { 
@@ -203,7 +191,6 @@
         const root = document.documentElement;
         const brand = document.getElementById('brand-name');
 
-        // Mise à jour visuelle immédiate
         if(id === 'U1') {
             root.style.setProperty('--primary', '#ff0000');
             root.style.setProperty('--primary-glow', 'rgba(255, 0, 0, 0.4)');
@@ -224,14 +211,22 @@
 
         document.getElementById('title').innerText = id === 'U1' ? 'UPPER 1' : 'UPPER 2';
        
-        // On vide et remplit la liste
         const list = document.getElementById('exo-list');
         list.innerHTML = '';
         
         config[id].forEach(name => {
             const h = logs[name] || []; const last = h.length > 0 ? h[h.length-1] : null;
-            let statusHtml = '<span class="status-badge" style="border-color:rgba(255,255,255,0.1); color:#666">CIBLE 10 REPS</span>';
-            if(last && last.sets.every(r => r >= 10)) statusHtml = '<span class="status-badge">AUGMENTER CHARGE</span>';
+            
+            // LOGIQUE DE BADGE AMÉLIORÉE
+            let badgeClass = "status-badge";
+            let badgeText = "CIBLE 10 REPS";
+            let badgeIcon = "";
+
+            if(last && last.sets.every(r => r >= 10)) {
+                badgeClass = "status-badge badge-success";
+                badgeText = "AUGMENTER CHARGE";
+                badgeIcon = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>`;
+            }
 
             const card = document.createElement('div');
             card.className = 'exo-card';
@@ -240,7 +235,7 @@
                 <div class="exo-info">
                     <div class="oswald">${name}</div>
                     <div style="font-size:15px; color:var(--dim); font-weight:700;">${last ? last.weight+'KG • '+last.sets.join('/') : '--'}</div>
-                    ${statusHtml}
+                    <span class="${badgeClass}">${badgeText} ${badgeIcon}</span>
                 </div>
                 <div class="add-btn-icon" style="color:${id === 'U1' ? 'white' : 'black'}">+</div>
             `;
@@ -334,3 +329,4 @@
 </script>
 </body>
 </html>
+ 
