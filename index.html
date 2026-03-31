@@ -18,6 +18,7 @@
             --text: #ffffff; 
             --dim: #888; 
             --success: #00ff88;
+            --error: #ff4444;
             --inner-glow: inset 0 1px 2px rgba(255,255,255,0.1);
         }
 
@@ -90,16 +91,12 @@
             margin-top: 10px; display: inline-flex; align-items: center; gap: 6px;
             border: 1px solid rgba(255,255,255,0.1); color: var(--dim);
             background: rgba(255,255,255,0.02);
-            transition: all 0.4s ease;
         }
 
-        /* NOUVEAU STYLE : BADGE SUCCÈS VERT */
         .badge-success {
             border-color: var(--success) !important;
             color: var(--success) !important;
             background: rgba(0, 255, 136, 0.05) !important;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.1);
         }
 
         .add-btn-icon {
@@ -107,15 +104,25 @@
             display: flex; align-items: center; justify-content: center;
             background: var(--primary); color: white; font-weight: bold; font-size: 22px;
             box-shadow: 0 10px 20px var(--primary-glow);
-            transition: background 0.4s ease;
         }
 
         .modal { 
             display: none; position: fixed; inset: 0; 
             background: radial-gradient(circle at center, var(--primary-dark) 0%, #050505 100%); 
             z-index: 1000; padding: 25px; overflow-y: auto;
-            transform: translate3d(0,0,0);
         }
+
+        /* STYLE BOUTON SUPPRIMER SÉRIE */
+        .btn-delete-set {
+            background: rgba(255, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(255, 68, 68, 0.2);
+            width: 35px; height: 35px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-delete-set:active { transform: scale(0.9); background: var(--error); color: white; }
 
         .btn-save {
             background: var(--primary); color: white; border: none; width: 100%; padding: 24px;
@@ -125,8 +132,8 @@
 
         .btn-qty { 
             background: #1a1a1a; color: white; border: 1px solid #333; 
-            width: 55px; height: 55px; border-radius: 18px; font-size: 24px; 
-            box-shadow: 0 8px 15px rgba(0,0,0,0.4), var(--inner-glow);
+            width: 45px; height: 45px; border-radius: 12px; font-size: 20px; 
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
         }
     </style>
 </head>
@@ -161,10 +168,12 @@
             <div id="last-record-text" style="font-family:Oswald; font-size:24px; margin-top:5px;"></div>
         </div>
 
-        <div class="input-section" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.05); padding: 30px; border-radius: 30px; box-shadow: inset 0 0 50px rgba(0,0,0,0.8);">
+        <div class="input-section" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: 30px; box-shadow: inset 0 0 50px rgba(0,0,0,0.8);">
             <input type="number" id="main-weight" class="weight-input" style="width:100%; background:transparent; border:none; color:#fff; font-size:60px; font-family:Oswald; text-align:center; outline:none;" inputmode="decimal">
             <div style="text-align:center; color:var(--primary); font-family:Oswald; margin-bottom:30px; font-size:14px; letter-spacing:3px;">KILOGRAMMES</div>
+            
             <div id="sets-container"></div>
+            
             <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #444; color:#888; padding:18px; margin-top:20px; border-radius:15px; font-family: Montserrat; font-size:12px;">+ AJOUTER SÉRIE</button>
         </div>
 
@@ -210,17 +219,12 @@
         }
 
         document.getElementById('title').innerText = id === 'U1' ? 'UPPER 1' : 'UPPER 2';
-       
         const list = document.getElementById('exo-list');
         list.innerHTML = '';
         
         config[id].forEach(name => {
             const h = logs[name] || []; const last = h.length > 0 ? h[h.length-1] : null;
-            
-            // LOGIQUE DE BADGE AMÉLIORÉE
-            let badgeClass = "status-badge";
-            let badgeText = "CIBLE 10 REPS";
-            let badgeIcon = "";
+            let badgeClass = "status-badge", badgeText = "CIBLE 10 REPS", badgeIcon = "";
 
             if(last && last.sets.every(r => r >= 10)) {
                 badgeClass = "status-badge badge-success";
@@ -230,7 +234,7 @@
 
             const card = document.createElement('div');
             card.className = 'exo-card';
-            card.onclick = (e) => { e.preventDefault(); openM(name); };
+            card.onclick = () => openM(name);
             card.innerHTML = `
                 <div class="exo-info">
                     <div class="oswald">${name}</div>
@@ -263,15 +267,26 @@
     function refreshSetsUI() {
         const container = document.getElementById('sets-container');
         container.innerHTML = currentSets.map((reps, i) => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:18px; border-radius:18px; margin-bottom:12px; border:1px solid rgba(255,255,255,0.02);">
-                <span class="oswald" style="color:var(--dim); font-size:12px;">SÉRIE ${i+1}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:12px 15px; border-radius:18px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.02);">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <button class="btn-delete-set" onclick="removeSet(${i})">✕</button>
+                    <span class="oswald" style="color:var(--dim); font-size:12px;">SÉRIE ${i+1}</span>
+                </div>
                 <div style="display:flex; align-items:center; gap:12px;">
                     <button class="btn-qty" onclick="changeRep(${i},-1)">-</button>
-                    <span class="oswald" style="font-size:28px; width:45px; text-align:center;">${reps}</span>
+                    <span class="oswald" style="font-size:26px; width:40px; text-align:center;">${reps}</span>
                     <button class="btn-qty" onclick="changeRep(${i},1)">+</button>
                 </div>
             </div>
         `).join('');
+    }
+
+    // NOUVELLE FONCTION DE SUPPRESSION
+    function removeSet(index) {
+        if(currentSets.length > 1) { // On garde au moins une série
+            currentSets.splice(index, 1);
+            refreshSetsUI();
+        }
     }
 
     function changeRep(i, v) { currentSets[i] = Math.max(0, currentSets[i] + v); refreshSetsUI(); }
@@ -313,8 +328,8 @@
     function renderHistory(name) {
         const h = logs[name] || [];
         document.getElementById('history-list').innerHTML = h.map((e, i) => `
-            <div style="display:flex; justify-content:space-between; padding:22px; background:rgba(255,255,255,0.02); border-radius:18px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.02);">
-                <span class="oswald" style="color:var(--primary); font-size:18px;">${e.weight} KG</span>
+            <div style="display:flex; justify-content:space-between; padding:20px; background:rgba(255,255,255,0.02); border-radius:18px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.02);">
+                <span class="oswald" style="color:var(--primary)">${e.weight} KG</span>
                 <span style="font-weight:700;">${e.sets.join(' / ')}</span>
             </div>
         `).reverse().join('');
@@ -329,4 +344,3 @@
 </script>
 </body>
 </html>
- 
