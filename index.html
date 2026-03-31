@@ -3,182 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Tracker Muscu</title>
+    <title>Tracker Pro Muscu</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-color: #0a0a0a;
-            --card-bg: #141414;
-            --accent-color: #2ecc71;
-            --text-main: #ffffff;
-            --text-dim: #888888;
+            --bg: #050505;
+            --card: #121212;
+            --accent-rm: #2ecc71; /* Vert pour le RM */
+            --accent-poids: #3498db; /* Bleu pour le poids réel */
+            --red: #e74c3c;
+            --text: #ffffff;
+            --text-dim: #666;
         }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-        }
-        .container { max-width: 600px; margin: 0 auto; }
-        h1 { text-transform: uppercase; letter-spacing: 2px; border-left: 4px solid var(--accent-color); padding-left: 15px; }
-        
-        .section-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { 
-            background: var(--card-bg); border: 1px solid #333; color: white; 
-            padding: 10px; flex: 1; cursor: pointer; border-radius: 5px;
-        }
-        .tab-btn.active { border-color: var(--accent-color); color: var(--accent-color); }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+        .container { max-width: 500px; margin: 0 auto; }
+        .header-tag { color: var(--red); font-size: 10px; font-weight: bold; letter-spacing: 2px; }
+        h1 { font-size: 22px; text-transform: uppercase; margin-bottom: 20px; }
 
-        .exercise-card {
-            background: var(--card-bg); padding: 15px; border-radius: 10px;
-            margin-bottom: 15px; border-bottom: 2px solid #222;
-        }
-        .exercise-header { display: flex; justify-content: space-between; align-items: center; }
-        .rm-badge { color: var(--accent-color); font-weight: bold; font-size: 0.9em; }
+        /* Onglets */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: var(--text-dim); border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .tab-btn.active { border-color: var(--red); color: white; background: rgba(231, 76, 60, 0.1); }
+
+        /* Carte Exercice */
+        .exo-card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #222; }
+        .exo-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .exo-name { font-weight: bold; text-transform: uppercase; font-size: 1.1em; }
+        .rm-val { color: var(--accent-rm); font-weight: bold; text-align: right; font-size: 0.9em; }
+
+        /* Saisie */
+        .input-row { display: grid; grid-template-columns: 1fr 1fr 50px; gap: 10px; }
+        input { background: #1a1a1a; border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; }
+        .btn-add { background: var(--red); border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* Stats & Graphique */
+        .stats-box { margin-top: 15px; border-top: 1px solid #222; padding-top: 15px; }
+        .chart-container { height: 200px; margin-bottom: 15px; }
         
-        .input-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
-        input { 
-            background: #1e1e1e; border: 1px solid #333; color: white; 
-            padding: 8px; border-radius: 5px; width: 80%;
-        }
-        button.add-btn {
-            background: var(--accent-color); border: none; color: black;
-            font-weight: bold; border-radius: 5px; cursor: pointer; padding: 10px; margin-top: 10px; width: 100%;
-        }
-        .chart-container { height: 150px; margin-top: 15px; display: none; }
-        
-        .custom-add { margin-top: 30px; padding: 15px; border: 1px dashed #444; border-radius: 10px; }
+        /* Historique */
+        .hist-btn { width: 100%; background: none; border: 1px solid #333; color: var(--text-dim); padding: 8px; border-radius: 6px; font-size: 0.8em; cursor: pointer; }
+        .hist-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85em; display: none; }
+        .hist-table th { text-align: left; color: var(--text-dim); padding: 5px; }
+        .hist-table td { padding: 8px 5px; border-top: 1px solid #1a1a1a; }
+        .hist-table.active { display: table; }
+
+        /* Ajout manuel */
+        .custom-add { border: 2px dashed #222; padding: 15px; border-radius: 12px; margin-top: 30px; text-align: center; }
+        .btn-create { background: var(--accent-rm); border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <p style="color: var(--accent-color); font-size: 0.8em; margin-bottom: 0;">OUTIL 01</p>
-    <h1>MES PERFORMANCES</h1>
+    <div class="header-tag">MODULE 06 - PERFORMANCES</div>
+    <h1>MON TRACKER PRO</h1>
 
-    <div class="section-tabs">
-        <button class="tab-btn active" onclick="filterCat('Haut')">Haut du corps</button>
-        <button class="tab-btn" onclick="filterCat('Bas')">Bas du corps</button>
+    <div class="tabs">
+        <button class="tab-btn active" id="btnHaut" onclick="setCat('Haut')">HAUT DU CORPS</button>
+        <button class="tab-btn" id="btnBas" onclick="setCat('Bas')">BAS DU CORPS</button>
     </div>
 
-    <div id="exercise-list">
-        </div>
+    <div id="liste-exos"></div>
 
     <div class="custom-add">
-        <h3>+ Ajouter un exercice perso</h3>
-        <input type="text" id="new-exo-name" placeholder="Nom de l'exercice">
-        <select id="new-exo-cat">
+        <div style="font-weight:bold; font-size: 0.8em; margin-bottom:10px;">AJOUTER UN EXERCICE</div>
+        <input type="text" id="newName" placeholder="Nom de l'exercice...">
+        <select id="newCat" style="width:100%; margin-top:10px; padding:10px; background:#1a1a1a; color:white; border:1px solid #333; border-radius:8px;">
             <option value="Haut">Haut du corps</option>
             <option value="Bas">Bas du corps</option>
         </select>
-        <button class="add-btn" onclick="addNewExercise()">Créer l'exercice</button>
+        <button class="btn-create" onclick="addCustom()">CRÉER L'EXERCICE</button>
     </div>
 </div>
 
 <script>
-    // Liste initiale des exercices
-    const initialExercises = [
-        { name: "Développé couché", cat: "Haut" }, { name: "Développé incliné", cat: "Haut" },
-        { name: "Dips", cat: "Haut" }, { name: "Tractions", cat: "Haut" },
-        { name: "Rowing barre", cat: "Haut" }, { name: "Squat", cat: "Bas" },
-        { name: "Presse à cuisses", cat: "Bas" }, { name: "Soulevé de terre", cat: "Bas" }
-        // ... (J'ai mis les principaux, tu pourras en ajouter via l'interface)
+    // Liste des exercices par défaut
+    const baseExos = [
+        {name: "Développé couché", cat: "Haut"}, {name: "Développé incliné", cat: "Haut"},
+        {name: "Dips", cat: "Haut"}, {name: "Tractions", cat: "Haut"},
+        {name: "Squat", cat: "Bas"}, {name: "Soulevé de terre", cat: "Bas"},
+        {name: "Presse à cuisses", cat: "Bas"}
     ];
 
+    let userExos = JSON.parse(localStorage.getItem('userExos')) || baseExos;
     let data = JSON.parse(localStorage.getItem('muscuData')) || {};
-    let currentCat = 'Haut';
+    let activeCat = 'Haut';
 
-    function calculate1RM(weight, reps) {
-        return (weight * (1 + reps / 30)).toFixed(1);
+    function setCat(c) {
+        activeCat = c;
+        document.getElementById('btnHaut').classList.toggle('active', c === 'Haut');
+        document.getElementById('btnBas').classList.toggle('active', c === 'Bas');
+        render();
     }
 
-    function saveData(exo, weight, reps) {
-        if (!weight || !reps) return;
-        const date = new Date().toLocaleDateString();
-        const rm = calculate1RM(weight, reps);
-        
-        if (!data[exo]) data[exo] = [];
-        data[exo].push({ date, weight, reps, rm: parseFloat(rm) });
-        
+    function addEntry(name) {
+        const w = parseFloat(document.getElementById(`w-${name}`).value);
+        const r = parseInt(document.getElementById(`r-${name}`).value);
+        if(!w || !r) return alert("Remplis le poids et les reps !");
+
+        const rm = parseFloat((w * (1 + r / 30)).toFixed(1));
+        const entry = {
+            date: new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'}),
+            poids: w,
+            reps: r,
+            rm: rm
+        };
+
+        if(!data[name]) data[name] = [];
+        data[name].push(entry);
         localStorage.setItem('muscuData', JSON.stringify(data));
         render();
     }
 
-    function addNewExercise() {
-        const name = document.getElementById('new-exo-name').value;
-        const cat = document.getElementById('new-exo-cat').value;
-        if(name) {
-            if(!data[name]) data[name] = [];
-            // On stocke la catégorie dans un objet spécial
-            localStorage.setItem('cat_'+name, cat);
+    function addCustom() {
+        const n = document.getElementById('newName').value;
+        const c = document.getElementById('newCat').value;
+        if(n) {
+            userExos.push({name: n, cat: c});
+            localStorage.setItem('userExos', JSON.stringify(userExos));
+            document.getElementById('newName').value = '';
             render();
         }
     }
 
+    function toggleHist(name) {
+        document.getElementById(`hist-${name}`).classList.toggle('active');
+    }
+
     function render() {
-        const list = document.getElementById('exercise-list');
+        const list = document.getElementById('liste-exos');
         list.innerHTML = '';
-        
-        // Fusionner la liste initiale et les nouveaux exercices créés
-        let allExos = [...initialExercises.map(e => e.name), ...Object.keys(data)];
-        allExos = [...new Set(allExos)]; // Supprimer doublons
 
-        allExos.forEach(exoName => {
-            const history = data[exoName] || [];
-            const cat = localStorage.getItem('cat_'+exoName) || (initialExercises.find(e => e.name === exoName)?.cat);
-            
-            if (cat !== currentCat) return;
-
-            const lastRM = history.length > 0 ? history[history.length-1].rm : '--';
+        userExos.filter(e => e.cat === activeCat).forEach(exo => {
+            const hist = data[exo.name] || [];
+            const lastRM = hist.length > 0 ? hist[hist.length-1].rm : '--';
 
             const card = document.createElement('div');
-            card.className = 'exercise-card';
+            card.className = 'exo-card';
             card.innerHTML = `
-                <div class="exercise-header">
-                    <div>
-                        <div style="font-size: 0.7em; color: var(--accent-color)">PERFORMANCE</div>
-                        <div style="font-weight: bold; text-transform: uppercase;">${exoName}</div>
+                <div class="exo-info">
+                    <div class="exo-name">${exo.name}</div>
+                    <div class="rm-val">MAX ESTIMÉ (1RM)<br><span style="font-size:1.4em">${lastRM} kg</span></div>
+                </div>
+                <div class="input-row">
+                    <input type="number" id="w-${exo.name}" placeholder="Kg">
+                    <input type="number" id="r-${exo.name}" placeholder="Reps">
+                    <button class="btn-add" onclick="addEntry('${exo.name}')">+</button>
+                </div>
+                ${hist.length > 0 ? `
+                    <div class="stats-box">
+                        <div class="chart-container"><canvas id="chart-${exo.name}"></canvas></div>
+                        <button class="hist-btn" onclick="toggleHist('${exo.name}')">Voir l'historique complet</button>
+                        <table class="hist-table" id="hist-${exo.name}">
+                            <thead><tr><th>DATE</th><th>TRAVAIL</th><th>1RM</th></tr></thead>
+                            <tbody>
+                                ${hist.slice().reverse().map(h => `
+                                    <tr>
+                                        <td>${h.date}</td>
+                                        <td>${h.poids}kg x ${h.reps}</td>
+                                        <td style="color:var(--accent-rm); font-weight:bold;">${h.rm}kg</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="rm-badge">1RM: ${lastRM} kg</div>
-                </div>
-                <div class="input-group">
-                    <input type="number" placeholder="Kg" id="w-${exoName}">
-                    <input type="number" placeholder="Reps" id="r-${exoName}">
-                    <button class="add-btn" style="margin:0" onclick="saveData('${exoName}', document.getElementById('w-${exoName}').value, document.getElementById('r-${exoName}').value)">+</button>
-                </div>
-                <div class="chart-container" id="chart-cont-${exoName}">
-                    <canvas id="canvas-${exoName}"></canvas>
-                </div>
+                ` : ''}
             `;
             list.appendChild(card);
 
-            if (history.length >= 2) {
-                document.getElementById(`chart-cont-${exoName}`).style.display = 'block';
-                new Chart(document.getElementById(`canvas-${exoName}`), {
+            if (hist.length > 0) {
+                new Chart(document.getElementById(`chart-${exo.name}`), {
                     type: 'line',
                     data: {
-                        labels: history.map(h => h.date),
-                        datasets: [{
-                            label: 'Evolution 1RM',
-                            data: history.map(h => h.rm),
-                            borderColor: '#2ecc71',
-                            tension: 0.3
-                        }]
+                        labels: hist.map(h => h.date),
+                        datasets: [
+                            {
+                                label: 'RM Estimé',
+                                data: hist.map(h => h.rm),
+                                borderColor: '#2ecc71',
+                                tension: 0.3,
+                                pointRadius: 3
+                            },
+                            {
+                                label: 'Poids Réel',
+                                data: hist.map(h => h.poids),
+                                borderColor: '#3498db',
+                                borderDash: [5, 5],
+                                tension: 0.3,
+                                pointRadius: 3
+                            }
+                        ]
                     },
-                    options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } }
+                    options: {
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#777', size: 10 }, position: 'top' } },
+                        scales: { 
+                            y: { grid: { color: '#222' }, ticks: { color: '#555' } },
+                            x: { grid: { display: false }, ticks: { color: '#555' } }
+                        }
+                    }
                 });
             }
         });
     }
-
-    function filterCat(cat) {
-        currentCat = cat;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        render();
-    }
-
     render();
 </script>
 
