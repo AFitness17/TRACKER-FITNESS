@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>AFITNESS TRACKER - ELITE</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <style>
         :root {
             --primary: #ff0000;
@@ -42,19 +40,9 @@
             background: linear-gradient(90deg, var(--primary-glow) 0%, transparent 100%);
             border-radius: 4px 15px 15px 4px;
         }
-        .header span { 
-            display: block;
-            color: var(--primary); font-weight: 900; font-size: 22px; 
-            text-shadow: 0 0 15px var(--primary-glow); 
-            line-height: 1.2;
-        }
-        .header h1 { 
-            font-size: 16px; margin: 5px 0 0 0; color: var(--dim); 
-            letter-spacing: 3px; font-weight: 400;
-            line-height: 1.2;
-        }
+        .header span { display: block; color: var(--primary); font-weight: 900; font-size: 22px; text-shadow: 0 0 15px var(--primary-glow); line-height: 1.2; }
+        .header h1 { font-size: 16px; margin: 5px 0 0 0; color: var(--dim); letter-spacing: 3px; font-weight: 400; }
 
-        /* NAVIGATION DÉFILANTE */
         .nav { 
             display: flex; 
             overflow-x: auto; 
@@ -67,41 +55,31 @@
         .nav::-webkit-scrollbar { display: none; }
 
         .nav-btn {
-            flex: 0 0 120px;
-            scroll-snap-align: start;
+            flex: 0 0 130px;
+            scroll-snap-align: center;
             border-radius: 14px; cursor: pointer; font-family: 'Oswald'; font-size: 11px; padding: 15px 5px;
             transition: 0.3s; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05);
             background: #0f0f0f; color: var(--dim);
             text-align: center;
         }
 
-        .active-u1 { background: linear-gradient(145deg, #ff1f1f, #8b0000) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3); }
-        .active-u2 { background: linear-gradient(145deg, #ffcc00, #b88600) !important; color: black !important; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(255, 204, 0, 0.3); }
-        .active-l1 { background: linear-gradient(145deg, #ff8c00, #cc7000) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(255, 140, 0, 0.3); }
-        .active-l2 { background: linear-gradient(145deg, #ff00ff, #b300b3) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(255, 0, 255, 0.3); }
+        .active-u1 { background: linear-gradient(145deg, #ff1f1f, #8b0000) !important; color: white !important; box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3); }
+        .active-u2 { background: linear-gradient(145deg, #ffcc00, #b88600) !important; color: black !important; box-shadow: 0 10px 20px rgba(255, 204, 0, 0.3); }
+        .active-l1 { background: linear-gradient(145deg, #ff8c00, #cc7000) !important; color: white !important; box-shadow: 0 10px 20px rgba(255, 140, 0, 0.3); }
+        .active-l2 { background: linear-gradient(145deg, #ff00ff, #b300b3) !important; color: white !important; box-shadow: 0 10px 20px rgba(255, 0, 255, 0.3); }
 
         .exo-card {
             background: var(--card); border: 1px solid rgba(255,255,255,0.03);
             padding: 25px; border-radius: 24px; margin-bottom: 20px;
             display: flex; justify-content: space-between; align-items: center;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            transition: 0.3s;
+            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
 
-        .del-exo-btn {
-            position: absolute; top: 10px; right: 10px;
-            background: rgba(255,255,255,0.05); color: var(--dim);
-            border: none; width: 24px; height: 24px; border-radius: 50%;
-            font-size: 10px; cursor: pointer;
-        }
-
+        .del-exo-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); color: #fff; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 10px; z-index: 5; }
         .status-badge { font-size: 9px; padding: 6px 14px; border-radius: 30px; font-weight: 800; margin-top: 10px; display: inline-flex; border: 1px solid rgba(255,255,255,0.1); }
         .badge-success { border-color: var(--success) !important; color: var(--success) !important; }
 
         .modal { display: none; position: fixed; inset: 0; background: radial-gradient(circle at center, var(--primary-dark) 0%, #050505 100%); z-index: 1000; padding: 25px; overflow-y: auto; }
-
         .btn-qty { background: #1a1a1a; color: white; border: 1px solid #333; width: 45px; height: 45px; border-radius: 12px; font-size: 20px; }
         .btn-save { background: var(--primary); color: white; border: none; width: 100%; padding: 24px; font-family: 'Oswald'; font-size: 18px; border-radius: 20px; font-weight: bold; margin-top: 30px; }
     </style>
@@ -109,7 +87,7 @@
 <body>
 
     <div class="header">
-        <span id="brand-name">AFITNESS TRACKER</span>
+        <span>AFITNESS TRACKER</span>
         <h1 id="title">UPPER 1</h1>
     </div>
 
@@ -131,43 +109,42 @@
             <h2 id="m-name" style="margin:0; font-size:28px;"></h2>
             <span onclick="closeM()" style="background:rgba(255,255,255,0.1); padding:15px; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✕</span>
         </div>
-        <div class="record-banner" style="border-left: 4px solid var(--primary); background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; margin-bottom: 25px;">
+        <div id="record-banner" style="border-left: 4px solid var(--primary); background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; margin-bottom: 25px;">
             <small style="color:var(--dim); font-size:10px; font-weight:bold;">DERNIÈRE PERFORMANCE</small>
             <div id="last-record-text" style="font-family:Oswald; font-size:24px; margin-top:5px;"></div>
         </div>
         <div class="input-section" style="background: rgba(0,0,0,0.6); padding: 25px; border-radius: 30px;">
-            <input type="number" id="main-weight" style="width:100%; background:transparent; border:none; color:#fff; font-size:60px; font-family:Oswald; text-align:center; outline:none;" inputmode="decimal">
+            <input type="number" id="main-weight" style="width:100%; background:transparent; border:none; color:#fff; font-size:60px; font-family:Oswald; text-align:center; outline:none;" inputmode="decimal" placeholder="0">
             <div style="text-align:center; color:var(--primary); font-family:Oswald; margin-bottom:30px; font-size:14px;">KILOGRAMMES</div>
             <div id="sets-container"></div>
             <button onclick="addNewSet()" style="width:100%; background:none; border:1px dashed #444; color:#888; padding:18px; margin-top:20px; border-radius:15px; font-size:12px;">+ AJOUTER SÉRIE</button>
         </div>
         <button class="btn-save" onclick="saveSession()">ENREGISTRER LA SÉANCE</button>
-        <div style="height: 250px; margin-top:40px; background:rgba(0,0,0,0.3); border-radius:25px; padding:20px;">
-            <canvas id="chart"></canvas>
-        </div>
-        <div id="history-list" style="margin-top:30px; padding-bottom:50px;"></div>
     </div>
 
 <script>
-    Chart.register(ChartDataLabels);
-
-    const defaultExos = {
+    // LISTE OFFICIELLE DEMANDÉE
+    const officialExos = {
         'U1': ["Développé couché", "Tirage vertical prise serré", "Développé militaire barre", "Tirage horizontale", "Curl marteau"],
         'U2': ["Développé couché barre", "Tirage horizontal", "Tirage vertical", "Face pull", "Elevation latérale"],
         'L1': ["Soulevé de terre", "Fente barre", "Presse", "Leg curl"],
         'L2': ["Squat barre", "Fente barre", "Leg extension", "Presse unilatéral"]
     };
 
-    // Charger la config ou utiliser les défauts
-    let config = JSON.parse(localStorage.getItem('Elite_VNext_Config')) || defaultExos;
+    // RÉCUPÉRATION ET SYNCHRONISATION FORCÉE
+    let config = JSON.parse(localStorage.getItem('Elite_VNext_Config')) || officialExos;
 
-    // FORCER L'AJOUT des nouvelles séances si elles n'existent pas encore dans le stockage local
-    if (!config.L1) config.L1 = defaultExos.L1;
-    if (!config.L2) config.L2 = defaultExos.L2;
+    // On force les exos demandés s'ils ne sont pas là
+    ['L1', 'L2'].forEach(session => {
+        if (!config[session] || config[session].length === 0) {
+            config[session] = [...officialExos[session]];
+        }
+    });
+
     localStorage.setItem('Elite_VNext_Config', JSON.stringify(config));
 
     let logs = JSON.parse(localStorage.getItem('Elite_VNext_Logs')) || {};
-    let currentExo = ""; let currentSets = []; let currentSessId = 'U1'; let chartObj = null;
+    let currentExo = ""; let currentSets = []; let currentSessId = 'U1';
 
     function load(id) {
         currentSessId = id;
@@ -176,22 +153,22 @@
 
         if(id === 'U1') {
             root.style.setProperty('--primary', '#ff0000');
-            root.style.setProperty('--bg-top', '#3a0000');
+            root.style.setProperty('--primary-dark', '#3a0000');
             document.getElementById('btnU1').className = 'nav-btn active-u1';
             document.getElementById('title').innerText = 'UPPER 1';
         } else if(id === 'U2') {
             root.style.setProperty('--primary', '#ffcc00');
-            root.style.setProperty('--bg-top', '#332200');
+            root.style.setProperty('--primary-dark', '#221a00');
             document.getElementById('btnU2').className = 'nav-btn active-u2';
             document.getElementById('title').innerText = 'UPPER 2';
         } else if(id === 'L1') {
-            root.style.setProperty('--primary', '#ff8c00'); // Orange
-            root.style.setProperty('--bg-top', '#3d2200');
+            root.style.setProperty('--primary', '#ff8c00');
+            root.style.setProperty('--primary-dark', '#3d2200');
             document.getElementById('btnL1').className = 'nav-btn active-l1';
             document.getElementById('title').innerText = 'LOWER 1';
         } else if(id === 'L2') {
-            root.style.setProperty('--primary', '#ff00ff'); // Rose
-            root.style.setProperty('--bg-top', '#3d003d');
+            root.style.setProperty('--primary', '#ff00ff');
+            root.style.setProperty('--primary-dark', '#3d003d');
             document.getElementById('btnL2').className = 'nav-btn active-l2';
             document.getElementById('title').innerText = 'LOWER 2';
         }
@@ -201,13 +178,13 @@
         
         config[id].forEach((name, index) => {
             const h = logs[name] || []; const last = h[h.length-1];
-            let badgeClass = "status-badge", badgeText = "CIBLE 10 REPS";
-            if(last && last.sets.every(r => r >= 10)) { badgeClass = "status-badge badge-success"; badgeText = "AUGMENTER CHARGE ↑"; }
+            let badgeText = (last && last.sets.every(r => r >= 10)) ? "AUGMENTER CHARGE ↑" : "CIBLE 10 REPS";
+            let badgeClass = (last && last.sets.every(r => r >= 10)) ? "status-badge badge-success" : "status-badge";
             
             const card = document.createElement('div');
             card.className = 'exo-card';
             card.innerHTML = `
-                <button class="del-exo-btn" onclick="deleteExo(${index}); event.stopPropagation();">✕</button>
+                <button class="del-exo-btn" onclick="event.stopPropagation(); deleteExo(${index});">✕</button>
                 <div onclick="openM('${name}')" style="width:100%">
                     <div class="oswald">${name}</div>
                     <div style="font-size:15px; color:var(--dim); font-weight:700;">${last ? last.weight+'KG • '+last.sets.join('/') : '--'}</div>
@@ -218,21 +195,21 @@
         });
     }
 
-    function addExoPrompt() { 
-        let n = prompt("Nom du nouvel exercice :"); 
-        if(n) { 
-            config[currentSessId].push(n); 
+    function addExoPrompt() {
+        let n = prompt("Nom de l'exercice :");
+        if(n && n.trim() !== "") { 
+            config[currentSessId].push(n.trim()); 
             localStorage.setItem('Elite_VNext_Config', JSON.stringify(config)); 
             load(currentSessId); 
-        } 
+        }
     }
-    
-    function deleteExo(i) { 
+
+    function deleteExo(i) {
         if(confirm("Supprimer cet exercice ?")) { 
             config[currentSessId].splice(i, 1); 
             localStorage.setItem('Elite_VNext_Config', JSON.stringify(config)); 
             load(currentSessId); 
-        } 
+        }
     }
 
     function openM(name) {
@@ -242,7 +219,7 @@
         document.getElementById('main-weight').value = last ? last.weight : "";
         currentSets = last ? [...last.sets] : [8,8,8];
         document.getElementById('modal').style.display = 'block';
-        refreshSetsUI(); renderChart(name); renderHistory(name);
+        refreshSetsUI();
     }
 
     function refreshSetsUI() {
@@ -264,52 +241,11 @@
     function saveSession() {
         const w = parseFloat(document.getElementById('main-weight').value);
         if(isNaN(w)) return;
-        const entry = { date: new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}), weight: w, sets: [...currentSets] };
+        const entry = { weight: w, sets: [...currentSets] };
         if(!logs[currentExo]) logs[currentExo] = [];
         logs[currentExo].push(entry);
         localStorage.setItem('Elite_VNext_Logs', JSON.stringify(logs));
         load(currentSessId); closeM();
-    }
-
-    function renderChart(name) {
-        const h = logs[name] || []; const ctx = document.getElementById('chart').getContext('2d');
-        if(chartObj) chartObj.destroy();
-        if(h.length < 1) return;
-        chartObj = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: h.map(l => l.date),
-                datasets: [{
-                    data: h.map(l => l.weight),
-                    borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary'),
-                    borderWidth: 3, tension: 0.3, pointRadius: 4, pointBackgroundColor: '#fff',
-                    datalabels: { color: '#fff', align: 'top', font: { family: 'Oswald', weight: 'bold' } }
-                }]
-            },
-            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#555', font: { size: 10 } } } } }
-        });
-    }
-
-    function renderHistory(name) {
-        const h = logs[name] || [];
-        document.getElementById('history-list').innerHTML = h.map((e, i) => `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:rgba(255,255,255,0.02); border-radius:15px; margin-bottom:10px;">
-                <div>
-                    <div class="oswald" style="color:var(--primary); font-size:16px;">${e.weight} KG <span style="color:var(--dim); font-size:11px; margin-left:8px;">${e.date}</span></div>
-                    <div style="font-weight:700; font-size:13px;">${e.sets.join(' / ')} REPS</div>
-                </div>
-                <button onclick="deleteLog(${i})" style="background:none; border:none; color:var(--error); font-size:16px;">✕</button>
-            </div>
-        `).reverse().join('');
-    }
-
-    function deleteLog(i) { 
-        if(confirm("Supprimer cette entrée ?")) { 
-            const realIdx = logs[currentExo].length - 1 - i;
-            logs[currentExo].splice(realIdx, 1); 
-            localStorage.setItem('Elite_VNext_Logs', JSON.stringify(logs)); 
-            openM(currentExo); 
-        } 
     }
 
     load('U1');
