@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AFITNESS TRACKER - CUSTOM</title>
+    <title>AFITNESS TRACKER - ELITE RELIEF</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <style>
         :root {
+            /* Couleurs dynamiques pilotées par le JS */
             --primary: #ff0000;
             --primary-glow: rgba(255, 0, 0, 0.4);
             --primary-dark: #3a0000;
             --bg-top: #2a0000;
+            
             --bg: #050505; 
-            --card: rgba(18, 18, 18, 0.8); 
+            /* CORRECTION: Fond de carte légèrement plus clair pour le contraste */
+            --card: #121212; 
             --text: #ffffff; 
             --dim: #888; 
             --success: #00ff88;
             --error: #ff4444;
-            --inner-glow: inset 0 1px 2px rgba(255,255,255,0.1);
+            --inner-glow: inset 0 1px 2px rgba(255,255,255,0.05);
         }
 
         * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
@@ -55,15 +58,32 @@
         .active-u1 { background: linear-gradient(145deg, #ff1f1f, #8b0000) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 15px 35px rgba(255, 0, 0, 0.35); }
         .active-u2 { background: linear-gradient(145deg, #ffcc00, #b88600) !important; color: black !important; transform: translateY(-4px); box-shadow: 0 15px 35px rgba(255, 204, 0, 0.3); }
 
+        /* CORRECTION EXCLUSIVE: CARTES MIEUX DÉFINIES (RELIEF) */
         .exo-card {
-            background: var(--card); border: 1px solid rgba(255,255,255,0.04);
+            background: var(--card); 
+            border: 1px solid rgba(255,255,255,0.03); /* Bordure très subtile */
             padding: 25px; border-radius: 24px; margin-bottom: 20px;
             display: flex; justify-content: space-between; align-items: center;
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             position: relative;
+            
+            /* L'effet de relief "IA sculpté" (Neumorphism) */
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.6),             /* Ombre portée externe (profondeur) */
+                inset 0 1px 1px rgba(255,255,255,0.03), /* Lueur interne subtile */
+                inset 0 0 15px rgba(0,0,0,0.4);           /* Ombre interne pour l'effet sculpté */
+                
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        /* BOUTON SUPPRIMER EXERCICE */
+        /* Effet "IA interactive" au survol/clic */
+        .exo-card:active { 
+            transform: scale(0.98); 
+            box-shadow: 
+                0 5px 15px rgba(0,0,0,0.8),
+                inset 0 0 25px rgba(0,0,0,0.6);
+        }
+
         .del-exo-btn {
             position: absolute; top: 10px; right: 10px;
             background: rgba(255,255,255,0.05); color: var(--dim);
@@ -131,7 +151,6 @@
 <script>
     Chart.register(ChartDataLabels);
 
-    // CONFIGURATION INITIALE CORRIGÉE
     let config = JSON.parse(localStorage.getItem('Elite_VNext_Config')) || {
         'U1': ["Développé couché", "Tirage vertical prise serré", "Développé militaire barre", "Tirage horizontale", "Curl marteau"],
         'U2': ["Développé couché barre", "Tirage horizontal", "Tirage vertical", "Face pull", "Elevation latérale"]
@@ -293,3 +312,4 @@
 </script>
 </body>
 </html>
+ 
